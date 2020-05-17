@@ -1,0 +1,14 @@
+{
+  "name": "node-js-sample",
+  "version": "3-2>1",
+  "description": "A sample Node.js package.json file",
+  "main": "none.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "node",
+    "test"
+  ],
+  "author": "Michel Cantacuzene"
+}

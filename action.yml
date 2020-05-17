@@ -1,0 +1,35 @@
+name: 'Version Bumper'
+description: 'Bumps version on request before PR merge'
+author: 'Michel Cantacuzene'
+branding:
+  icon: 'arrow-up'
+  color: 'blue'
+inputs:
+  options-file: # File with options
+    description: 'File path of the options file. Options file must be JSON format.'
+    required: false
+  # Options file information can be passed directly to the action with these variables
+  # Native action information is prioritized over options file information (i.e. user can override options directly here without modifying the options file)
+  scheme: # scheme to use
+    description: 'Versioning scheme to use'
+    required: false
+  custom-scheme:
+    description: 'Custom Scheme to use'
+    required: false
+  version-file:
+    description: "File containing the current version. Can be in stringified JSON format for accessor information"
+    required: false
+    default: './package.json'
+  files:
+    description: 'List of identifiers to files containing version information to be bumped. Must be in stringified JSON format.'
+    required: false
+  rules:
+    description: 'List of versioning rules'
+    required: false
+  # Github token to commit the bumps
+  github-token:
+    description: 'Authorized github token'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

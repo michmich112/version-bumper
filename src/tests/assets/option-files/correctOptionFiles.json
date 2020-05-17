@@ -1,0 +1,31 @@
+{
+  "scheme": "semantic",
+  "versionFile": "./src/tests/assets/package-semantic-stub.json",
+  "files": ["./src/example/file1", {
+    "path": "./src/example/file2"
+  },{
+    "path": "./src/example/file3",
+    "line": 69
+  }],
+  "rules": [
+    {
+      "trigger": "commit",
+      "bump": "build"
+    },
+    {
+      "trigger": "commit",
+      "bump": "minor",
+      "branch": "master",
+      "reset": "build"
+    },
+    {
+      "trigger": "commit",
+      "bump": "major",
+      "branch": "release",
+      "reset": [
+        "minor",
+        "build"
+      ]
+    }
+  ]
+}
