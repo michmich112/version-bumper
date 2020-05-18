@@ -117,7 +117,7 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
             const filesArray = JSON.parse(files);
             if (!Array.isArray(filesArray)) {
                 err("Files should be in array stringified JSON format");
-            } else bumperOptions.files = normalizeFiles(filesArray);
+            } else bumperOptions.files = normalizeFiles([bumperOptions.versionFile, ...filesArray]);
         } catch (e) {
             err("Files not in JSON format");
         }
@@ -125,7 +125,7 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
         || !bumperOptions.files
         || !Array.isArray(bumperOptions.files)) {
         err("Files are not defined in option file or workflow input.");
-    } else bumperOptions.files = normalizeFiles(bumperOptions.files);
+    } else bumperOptions.files = normalizeFiles([bumperOptions.versionFile, ...bumperOptions.files]);
 
     if (rules && rules.trim() !== '') {
         try {

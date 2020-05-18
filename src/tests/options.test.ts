@@ -57,7 +57,8 @@ describe("Get Bumper Options", () => {
                     "scheme": "semantic",
                     "schemeDefinition": "major.minor[.build]",
                     "versionFile": {"path":"./src/tests/assets/package-semantic-stub.json"},
-                    "files": [{
+                    "files": [{"path":"./src/tests/assets/package-semantic-stub.json"},
+                        {
                         "path": "./src/example/file1"
                     }, {
                         "path": "./src/example/file2"
@@ -118,7 +119,8 @@ describe("Get Bumper Options", () => {
                         "scheme": "custom",
                         "schemeDefinition": "major.minor[.build]",
                         "versionFile": {"path":"./src/tests/assets/package-semantic-stub.json"},
-                        "files": [{
+                        "files": [{"path":"./src/tests/assets/package-semantic-stub.json"},
+                            {
                             "path": "./src/example/file1"
                         }, {
                             "path": "./src/example/file2"
@@ -165,7 +167,8 @@ describe("Get Bumper Options", () => {
                         "scheme": "custom",
                         "schemeDefinition": "major-minor[->build]",
                         "versionFile": {"path":"./src/tests/assets/package-semantic-stub.json"},
-                        "files": [{
+                        "files": [{"path":"./src/tests/assets/package-semantic-stub.json"},
+                            {
                             "path": "./src/example/file1"
                         }, {
                             "path": "./src/example/file2"
@@ -212,7 +215,8 @@ describe("Get Bumper Options", () => {
                         "scheme": "custom",
                         "schemeDefinition": "major-minor[->build]",
                         "versionFile": {"path":"./src/tests/assets/package-semantic-stub.json"},
-                        "files": [{
+                        "files": [{"path":"./src/tests/assets/package-semantic-stub.json"},
+                            {
                             "path": "./src/example/file1"
                         }, {
                             "path": "./src/example/file2"
@@ -259,7 +263,8 @@ describe("Get Bumper Options", () => {
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
                         "versionFile": {"path":"./src/tests/assets/package-custom-stub.json"},
-                        "files": [{
+                        "files": [{"path":"./src/tests/assets/package-custom-stub.json"},
+                            {
                             "path": "./src/example/file1"
                         }, {
                             "path": "./src/example/file2"
@@ -306,7 +311,7 @@ describe("Get Bumper Options", () => {
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
                         "versionFile": {"path":"./src/tests/assets/package-semantic-stub.json"},
-                        "files": [],
+                        "files": [{"path":"./src/tests/assets/package-semantic-stub.json"}],
                         "rules": [
                             {
                                 "trigger": "commit",
@@ -344,7 +349,7 @@ describe("Get Bumper Options", () => {
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
                         "versionFile": {"path":"./src/tests/assets/package-semantic-stub.json"},
-                        "files": [
+                        "files": [{"path":"./src/tests/assets/package-semantic-stub.json"},
                             {
                                 "path": './file1'
                             }, {
@@ -392,7 +397,8 @@ describe("Get Bumper Options", () => {
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
                         "versionFile": {"path":"./src/tests/assets/package-semantic-stub.json"},
-                        "files": [{
+                        "files": [{"path":"./src/tests/assets/package-semantic-stub.json"},
+                            {
                             "path": "./src/example/file1"
                         }, {
                             "path": "./src/example/file2"
@@ -417,7 +423,7 @@ describe("Get Bumper Options", () => {
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
                         "versionFile": {"path":"./src/tests/assets/package-semantic-stub.json"},
-                        "files": [
+                        "files": [{"path":"./src/tests/assets/package-semantic-stub.json"},
                             {
                                 "path": "./src/example/file1"
                             }, {
