@@ -109,12 +109,22 @@ function getBumperOptions() {
         catch (e) {
             err(e);
         }
-        if (versionFile && versionFile.trim() !== '')
-            bumperOptions.versionFile = versionFile;
-        else if (!bumperOptions.hasOwnProperty('scheme')
+        if (versionFile && versionFile.trim() !== '') {
+            try {
+                bumperOptions.versionFile = JSON.parse(versionFile);
+            }
+            catch (e) {
+                console.log(e.message);
+                bumperOptions.versionFile = { path: versionFile };
+            }
+        }
+        else if (!bumperOptions.hasOwnProperty('versionFile')
             || !bumperOptions.versionFile
             || bumperOptions.versionFile.trim() === "") {
             err("Version file is not defined in option file or workflow input.");
+        }
+        else {
+            bumperOptions.versionFile = normalizeFiles([bumperOptions.versionFile])[0];
         }
         if (files && files.trim() !== '') {
             try {
@@ -156,8 +166,10 @@ function getBumperOptions() {
         }
         if (error !== "")
             throw new Error(error);
-        else
+        else {
+            console.log(JSON.stringify(bumperOptions));
             return bumperOptions;
+        }
     });
 }
 exports.getBumperOptions = getBumperOptions;

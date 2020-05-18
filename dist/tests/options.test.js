@@ -58,7 +58,7 @@ describe("Get Bumper Options", () => {
                 expect(options).toStrictEqual({
                     "scheme": "semantic",
                     "schemeDefinition": "major.minor[.build]",
-                    "versionFile": "./src/tests/assets/package-semantic-stub.json",
+                    "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
                     "files": [{
                             "path": "./src/example/file1"
                         }, {
@@ -119,7 +119,7 @@ describe("Get Bumper Options", () => {
                     expect(options).toStrictEqual({
                         "scheme": "custom",
                         "schemeDefinition": "major.minor[.build]",
-                        "versionFile": "./src/tests/assets/package-semantic-stub.json",
+                        "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
                         "files": [{
                                 "path": "./src/example/file1"
                             }, {
@@ -166,7 +166,7 @@ describe("Get Bumper Options", () => {
                     expect(options).toStrictEqual({
                         "scheme": "custom",
                         "schemeDefinition": "major-minor[->build]",
-                        "versionFile": "./src/tests/assets/package-semantic-stub.json",
+                        "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
                         "files": [{
                                 "path": "./src/example/file1"
                             }, {
@@ -213,7 +213,7 @@ describe("Get Bumper Options", () => {
                     expect(options).toStrictEqual({
                         "scheme": "custom",
                         "schemeDefinition": "major-minor[->build]",
-                        "versionFile": "./src/tests/assets/package-semantic-stub.json",
+                        "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
                         "files": [{
                                 "path": "./src/example/file1"
                             }, {
@@ -260,7 +260,7 @@ describe("Get Bumper Options", () => {
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
-                        "versionFile": "./src/tests/assets/package-custom-stub.json",
+                        "versionFile": { "path": "./src/tests/assets/package-custom-stub.json" },
                         "files": [{
                                 "path": "./src/example/file1"
                             }, {
@@ -307,7 +307,7 @@ describe("Get Bumper Options", () => {
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
-                        "versionFile": "./src/tests/assets/package-semantic-stub.json",
+                        "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
                         "files": [],
                         "rules": [
                             {
@@ -345,7 +345,7 @@ describe("Get Bumper Options", () => {
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
-                        "versionFile": "./src/tests/assets/package-semantic-stub.json",
+                        "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
                         "files": [
                             {
                                 "path": './file1'
@@ -394,7 +394,7 @@ describe("Get Bumper Options", () => {
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
-                        "versionFile": "./src/tests/assets/package-semantic-stub.json",
+                        "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
                         "files": [{
                                 "path": "./src/example/file1"
                             }, {
@@ -419,7 +419,7 @@ describe("Get Bumper Options", () => {
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
                         "schemeDefinition": "major.minor[.build]",
-                        "versionFile": "./src/tests/assets/package-semantic-stub.json",
+                        "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
                         "files": [
                             {
                                 "path": "./src/example/file1"

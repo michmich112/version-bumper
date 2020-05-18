@@ -64,7 +64,7 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
         rules = core.getInput('rules');
     let error = ""; // error message
     let bumperOptions: any = {};
-    let err = (message:string) => {
+    let err = (message: string) => {
         console.error(message);
         error += message + '\n';
     };
@@ -73,9 +73,9 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
         console.warn(`Options file with path ${optionsFile} does not exist`);
         // error += `Options file with path ${optionsFile} does not exist\n`;
     } else if (optionsFile && fs.existsSync(optionsFile)) {
-        try{
-            bumperOptions = JSON.parse(await fs.readFileSync(optionsFile, {encoding:'utf8', flag:'r'}));
-        }catch(e){
+        try {
+            bumperOptions = JSON.parse(await fs.readFileSync(optionsFile, {encoding: 'utf8', flag: 'r'}));
+        } catch (e) {
             console.warn(`Error reading or parsing bumper options file with path ${optionsFile}\n${e}`);
         }
     }
@@ -91,50 +91,62 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
         bumperOptions.scheme = "custom";
         bumperOptions.schemeDefinition = customScheme;
     }
-    try{
+    try {
         bumperOptions.schemeDefinition = getSchemeDefinition(bumperOptions);
-    }catch (e) {
+    } catch (e) {
         err(e);
     }
 
-    if (versionFile && versionFile.trim() !== '') bumperOptions.versionFile = versionFile;
-    else if(!bumperOptions.hasOwnProperty('scheme')
+    if (versionFile && versionFile.trim() !== '') {
+        try {
+            bumperOptions.versionFile = JSON.parse(versionFile);
+        } catch (e) {
+            console.log(e.message);
+            bumperOptions.versionFile = {path:versionFile};
+        }
+    } else if (!bumperOptions.hasOwnProperty('versionFile')
         || !bumperOptions.versionFile
-        || (bumperOptions.versionFile as string).trim() === ""){
+        || (bumperOptions.versionFile as string).trim() === "") {
         err("Version file is not defined in option file or workflow input.");
+    }else {
+        bumperOptions.versionFile = normalizeFiles([bumperOptions.versionFile])[0];
     }
 
-    if(files && files.trim() !== ''){
-        try{
+    if (files && files.trim() !== '') {
+        try {
             const filesArray = JSON.parse(files);
-            if(!Array.isArray(filesArray)) {
+            if (!Array.isArray(filesArray)) {
                 err("Files should be in array stringified JSON format");
-            }else bumperOptions.files = normalizeFiles(filesArray);
-        }catch (e) {
+            } else bumperOptions.files = normalizeFiles(filesArray);
+        } catch (e) {
             err("Files not in JSON format");
         }
-    }else if(!bumperOptions.hasOwnProperty('files')
+    } else if (!bumperOptions.hasOwnProperty('files')
         || !bumperOptions.files
-        || !Array.isArray(bumperOptions.files)){
+        || !Array.isArray(bumperOptions.files)) {
         err("Files are not defined in option file or workflow input.");
-    }else bumperOptions.files = normalizeFiles(bumperOptions.files);
+    } else bumperOptions.files = normalizeFiles(bumperOptions.files);
 
-    if(rules && rules.trim() !== ''){
-        try{
+    if (rules && rules.trim() !== '') {
+        try {
             const rulesArray = JSON.parse(rules);
-            if(!Array.isArray(rulesArray)) {
+            if (!Array.isArray(rulesArray)) {
                 err("Rules should be in array stringified JSON format");
-            }else bumperOptions.rules = rulesArray as BumpRule[];
-        }catch (e) {
+            } else bumperOptions.rules = rulesArray as BumpRule[];
+        } catch (e) {
             err("Rules not in JSON format");
         }
-    }else if(!bumperOptions.hasOwnProperty('rules')
+    } else if (!bumperOptions.hasOwnProperty('rules')
         || !bumperOptions.rules
-        || !Array.isArray(bumperOptions.rules)){
+        || !Array.isArray(bumperOptions.rules)) {
         err("Rules are not defined in option file or workflow input.");
     }
-    if(error !== "") throw new Error(error);
-    else return bumperOptions as BumperOptionsFile;
+
+    if (error !== "") throw new Error(error);
+    else {
+        console.log(JSON.stringify(bumperOptions));
+        return bumperOptions as BumperOptionsFile;
+    }
 }
 
 /**
