@@ -14,7 +14,7 @@ const SUCCESS = 0,
 
 async function main() {
 
-    if(!core.getInput('github-token')){
+    if (!core.getInput('github-token')) {
         core.error("Github token required");
         return FAILURE;
     }
@@ -23,7 +23,7 @@ async function main() {
         let options: BumperOptionsFile = await getBumperOptions();
         let state: BumperState = await getBumperState(options);
 
-        const GIT_OPTIONS:CommitOptions = {
+        const GIT_OPTIONS: CommitOptions = {
             userName: 'version-bumper',
             userEmail: 'bumper@boringday.co',
             message: `Updated version ${state.curVersion} -> ${state.newVersion}.`,
@@ -93,3 +93,10 @@ async function setNewVersion(file: VersionFile, curVersion: string, newVersion: 
         await fs.writeFileSync(file.path, update, {encoding: 'utf8', flag: 'w'});
     }
 }
+
+main()
+    .then(status => status)
+    .catch(e => {
+    core.error(e);
+    return FAILURE;
+});

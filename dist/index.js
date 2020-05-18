@@ -120,3 +120,9 @@ function setNewVersion(file, curVersion, newVersion) {
         });
     });
 }
+main()
+    .then(status => status)
+    .catch(e => {
+    core.error(e);
+    return FAILURE;
+});
