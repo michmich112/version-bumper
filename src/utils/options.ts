@@ -183,8 +183,8 @@ export function normalizeFiles(files: (VersionFile | string)[]): VersionFile[] {
  */
 export function getTrigger(): RuleTrigger {
     let {eventName, payload} = github.context;
-    console.log(`Trigger -> ${eventName} \n Payload -> ${JSON.stringify(payload)}`);
-    if (eventName === 'push' && (payload as Webhooks.WebhookPayloadPush).created) return 'commit';
+    console.log(`Trigger -> ${eventName}`);
+    if (eventName === 'push' /*&& (payload as Webhooks.WebhookPayloadPush).created*/) return 'commit';
     else if (eventName === 'pull_request') return 'pull-request';
     else if (eventName === 'pull_request_review_comment') return 'pr-comment';
     console.warn("Event trigger not of type: commit, pull request or pr-comment.");
@@ -203,7 +203,7 @@ export async function getBumperState(options: BumperOptionsFile): Promise<Bumper
         trigger: RuleTrigger = getTrigger(),
         newVersion = await bumpVersion(options, trigger, branch),
         files = getFiles(options);
-    return {
+    const state ={
         curVersion,
         newVersion,
         schemeRegExp,
@@ -212,4 +212,6 @@ export async function getBumperState(options: BumperOptionsFile): Promise<Bumper
         branch,
         files
     };
+    console.log(`State -> ${JSON.stringify(state)}`);
+    return state;
 }

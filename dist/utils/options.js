@@ -206,8 +206,8 @@ exports.normalizeFiles = normalizeFiles;
  */
 function getTrigger() {
     let { eventName, payload } = github.context;
-    console.log(`Trigger -> ${eventName} \n Payload -> ${JSON.stringify(payload)}`);
-    if (eventName === 'push' && payload.created)
+    console.log(`Trigger -> ${eventName}`);
+    if (eventName === 'push' /*&& (payload as Webhooks.WebhookPayloadPush).created*/)
         return 'commit';
     else if (eventName === 'pull_request')
         return 'pull-request';
@@ -224,7 +224,7 @@ exports.getTrigger = getTrigger;
 function getBumperState(options) {
     return __awaiter(this, void 0, void 0, function* () {
         const branch = getBranchFromRef(process.env.GITHUB_REF || ''), schemeRegExp = utils_1.getSchemeRegex(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield utils_1.getCurVersion(options), trigger = getTrigger(), newVersion = yield utils_1.bumpVersion(options, trigger, branch), files = getFiles(options);
-        return {
+        const state = {
             curVersion,
             newVersion,
             schemeRegExp,
@@ -233,6 +233,8 @@ function getBumperState(options) {
             branch,
             files
         };
+        console.log(`State -> ${JSON.stringify(state)}`);
+        return state;
     });
 }
 exports.getBumperState = getBumperState;
