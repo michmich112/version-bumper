@@ -114,7 +114,7 @@ function getBumperOptions() {
                 bumperOptions.versionFile = JSON.parse(versionFile);
             }
             catch (e) {
-                console.log(e.message);
+                // console.log(e.message);
                 bumperOptions.versionFile = { path: versionFile };
             }
         }
@@ -206,6 +206,7 @@ exports.normalizeFiles = normalizeFiles;
  */
 function getTrigger() {
     let { eventName, payload } = github.context;
+    console.log(`Trigger -> ${eventName} \n Payload -> ${JSON.stringify(payload)}`);
     if (eventName === 'push' && payload.created)
         return 'commit';
     else if (eventName === 'pull_request')

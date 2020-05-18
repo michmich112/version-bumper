@@ -101,7 +101,7 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
         try {
             bumperOptions.versionFile = JSON.parse(versionFile);
         } catch (e) {
-            console.log(e.message);
+            // console.log(e.message);
             bumperOptions.versionFile = {path:versionFile};
         }
     } else if (!bumperOptions.hasOwnProperty('versionFile')
@@ -183,6 +183,7 @@ export function normalizeFiles(files: (VersionFile | string)[]): VersionFile[] {
  */
 export function getTrigger(): RuleTrigger {
     let {eventName, payload} = github.context;
+    console.log(`Trigger -> ${eventName} \n Payload -> ${JSON.stringify(payload)}`);
     if (eventName === 'push' && (payload as Webhooks.WebhookPayloadPush).created) return 'commit';
     else if (eventName === 'pull_request') return 'pull-request';
     else if (eventName === 'pull_request_review_comment') return 'pr-comment';
