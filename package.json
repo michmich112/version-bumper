@@ -1,0 +1,29 @@
+{
+  "name": "version-bumper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/exec": "^1.0.4",
+    "@actions/github": "^2.1.1",
+    "@octokit/webhooks": "^7.4.0",
+    "@types/jest": "^25.1.4"
+  },
+  "devDependencies": {
+    "@types/node": "^13.9.8",
+    "jest": "^25.2.4",
+    "typescript": "^3.8.3"
+  },
+  "jest": {
+    "verbose": true,
+    "rootDir": "dist"
+  }
+}

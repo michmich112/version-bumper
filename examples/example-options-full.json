@@ -1,0 +1,32 @@
+{
+  "scheme": "custom",
+  "schemeDefinition": "major.minor[.build][->patch]",
+  "versionFile": "./package.json",
+  "files": ["./src/example/file1", {
+    "path": "./src/example/file2"
+  },{
+    "path": "./src/example/file3",
+    "line": 3
+  }],
+  "rules": [
+    {
+      "trigger": "commit",
+      "bump": "build"
+    },
+    {
+      "trigger": "commit",
+      "bump": "minor",
+      "branch": "master",
+      "reset": "build"
+    },
+    {
+      "trigger": "commit",
+      "bump": "major",
+      "branch": "release",
+      "reset": [
+        "minor",
+        "build"
+      ]
+    }
+  ]
+}
