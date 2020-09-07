@@ -1,3 +1,4 @@
 {
-  "semantic": "major.minor[.build]"
+  "semantic": "major.minor[.build]",
+  "org_semantic": "major.minor.build"
 }

@@ -61,6 +61,8 @@ export function getSchemeRegex(options: BumperOptionsFile) {
 export async function getCurVersion(options: BumperOptionsFile) {
     let {path, line} = options.versionFile,
         regExp = getSchemeRegex(options);
+
+    console.log(regExp);
     // verify the path actually corresponds to a file
     if (!fs.existsSync(path)) throw new Error(`Version file with path ${path} does not exist.`);
 

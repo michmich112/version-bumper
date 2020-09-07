@@ -46,6 +46,8 @@ describe("Generate Regular expression from scheme description", () => {
         let scheme = 'major.minor.build',
             genRegExp = generateSchemeRegexp(scheme);
 
+        console.log(genRegExp);
+
         test("it should identify the correct item in the string for a simple input", () => {
             let match = "1.2.3".match(genRegExp);
             expect(match).not.toBe(null);
@@ -681,6 +683,7 @@ describe("Bump Version tests", () => {
         test("Commit Trigger random branch Tests no build", async () => {
             options.versionFile.line = 2; // should fetch version number 1.2.3
             // commit on random branch should result in just a bump from the build tag
+            console.log(options);
             let newVersion: string = await bumpVersion(options, 'commit', 'random');
             expect(newVersion).toBe('1.2.1');
         });

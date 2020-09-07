@@ -21,6 +21,7 @@ async function main() {
 
     try {
         let options: BumperOptionsFile = await getBumperOptions();
+
         let state: BumperState = await getBumperState(options);
 
         const GIT_OPTIONS: CommitOptions = {

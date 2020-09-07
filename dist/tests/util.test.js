@@ -36,6 +36,7 @@ describe("Retrieve 1st level interbracket content", () => {
 describe("Generate Regular expression from scheme description", () => {
     describe("General semantic cases: major.minor.build", () => {
         let scheme = 'major.minor.build', genRegExp = regExpParser_1.generateSchemeRegexp(scheme);
+        console.log(genRegExp);
         test("it should identify the correct item in the string for a simple input", () => {
             let match = "1.2.3".match(genRegExp);
             expect(match).not.toBe(null);
@@ -569,6 +570,7 @@ describe("Bump Version tests", () => {
         test("Commit Trigger random branch Tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 2; // should fetch version number 1.2.3
             // commit on random branch should result in just a bump from the build tag
+            console.log(options);
             let newVersion = yield utils_1.bumpVersion(options, 'commit', 'random');
             expect(newVersion).toBe('1.2.1');
         }));
