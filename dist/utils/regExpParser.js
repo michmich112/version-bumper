@@ -14,7 +14,7 @@ function generateSchemeRegexp(scheme) {
     // regExp = scheme.replace(/[\[\]]/gm, "");
     regExp = scheme.replace(/\[/gm, '(').replace(/\]/gm, ')?');
     seperators.forEach((sep) => regExp = regExp.replace(new RegExp('\\' + sep.split('').join('\\'), 'g'), '\\' + sep.split('').join('\\')));
-    tags.forEach((tag) => regExp = regExp.replace(tag, '[0-9]'));
+    tags.forEach((tag) => regExp = regExp.replace(tag, '[0-9]+'));
     return new RegExp(regExp);
 }
 exports.generateSchemeRegexp = generateSchemeRegexp;

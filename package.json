@@ -1,6 +1,6 @@
 {
   "name": "version-bumper",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "main": "src/lib/index.js",
   "scripts": {
