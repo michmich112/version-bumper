@@ -115,4 +115,4 @@ web_modules/
 .pnp.*
 
 # Jet Brains
-.idea
+.idea/
