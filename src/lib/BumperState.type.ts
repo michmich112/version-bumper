@@ -1,11 +1,12 @@
-import {RuleTrigger, VersionFile} from "./OptionsFile.types";
+import { RuleTrigger, VersionFile } from "./OptionsFile.types";
 
 export default interface BumperState {
-    curVersion: string,
-    newVersion: string,
-    schemeRegExp: RegExp,
-    schemeDefinition: string,
-    trigger: RuleTrigger,
-    branch: string
-    files: VersionFile[]
+  curVersion: string,         // current version
+  newVersion: string,         // new bumped version
+  schemeRegExp: RegExp,       // schema for the version
+  schemeDefinition: string,   // Schema definition
+  tag: boolean,               // Tag commit flag
+  trigger: RuleTrigger,       // trigger causing the action to be run
+  branch: string,             // branch on which the action is run
+  files: VersionFile[]        // branch on which the action is run
 }

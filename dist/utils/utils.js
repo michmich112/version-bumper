@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,18 +34,16 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.bumpVersion = exports.versionMapToString = exports.getOptionalItems = exports.getOptional = exports.getVersionMap = exports.getTag = exports.getResetItems = exports.getBumpItems = exports.getRules = exports.getCurVersion = exports.getSchemeRegex = exports.getIntrabracketContent = exports.verifyTrigger = void 0;
 const fs = __importStar(require("fs"));
 const readline = __importStar(require("readline"));
 const regExpParser_1 = require("./regExpParser");
 const options_1 = require("./options");
+const isRuleApplicable_1 = __importDefault(require("../rules/isRuleApplicable"));
 /**
  * Verifies that the trigger event is acceptable
  */
@@ -46,7 +63,8 @@ exports.verifyTrigger = verifyTrigger;
  * @param content
  */
 function getIntrabracketContent(content) {
-    let bracketContent = content.split('').reduce((pre, cur) => {
+    const bracketContent = content.split('')
+        .reduce((pre, cur) => {
         if (cur === '[')
             pre = Object.assign(Object.assign({}, pre), { open: pre.open + 1, content: pre.open === 0 ? [...pre.content, ""] : [...pre.content] });
         else if (cur === ']')
@@ -134,6 +152,17 @@ function getCurVersion(options) {
 }
 exports.getCurVersion = getCurVersion;
 /**
+ * Get a list of all the rules that are applicable for the current trigger and branch
+ * @param {BumperOptionsFile} options
+ * @param {RuleTrigger} trigger
+ * @param {string} branch
+ * @returns {BumpRule[]}
+ */
+function getRules(options, trigger, branch) {
+    return options.rules.filter((rule) => isRuleApplicable_1.default(rule, trigger, branch));
+}
+exports.getRules = getRules;
+/**
  * Extracts the items to bump based on the trigger and the branch
  * The branch is set as the destination branch for pr requests
  * @param options
@@ -141,18 +170,9 @@ exports.getCurVersion = getCurVersion;
  * @param branch
  */
 function getBumpItems(options, trigger, branch) {
-    let bumpItems = new Set();
-    for (let rule of options.rules) {
-        const triggerMatch = rule.trigger === trigger, branchMatch = rule.branch ? branch.match(rule.branch) : true;
-        if (triggerMatch && branchMatch) {
-            // Add the bump items if the trigger and branch match
-            if (rule.bump && Array.isArray(rule.bump))
-                rule.bump.forEach((br) => bumpItems.add(br));
-            else if (rule.bump)
-                bumpItems.add(rule.bump);
-        }
-    }
-    return [...bumpItems.values()];
+    const rules = getRules(options, trigger, branch);
+    return [...new Set(rules.map((rule) => rule.bump ? Array.isArray(rule.bump) ? rule.bump : [rule.bump] : [])
+            .reduce((pre, cur) => [...pre, ...cur]))];
 }
 exports.getBumpItems = getBumpItems;
 /**
@@ -163,20 +183,23 @@ exports.getBumpItems = getBumpItems;
  * @param branch
  */
 function getResetItems(options, trigger, branch) {
-    let resetItems = new Set();
-    for (let rule of options.rules) {
-        const triggerMatch = rule.trigger === trigger, branchMatch = rule.branch ? branch.match(rule.branch) : true;
-        if (triggerMatch && branchMatch) {
-            // Add the bump items if the trigger and branch match
-            if (rule.reset && Array.isArray(rule.reset))
-                rule.reset.forEach((br) => resetItems.add(br));
-            else if (rule.reset)
-                resetItems.add(rule.reset);
-        }
-    }
-    return [...resetItems.values()];
+    const rules = getRules(options, trigger, branch);
+    return [...new Set(rules.map((rule) => rule.reset ? Array.isArray(rule.reset) ? rule.reset : [rule.reset] : [])
+            .reduce((pre, cur) => [...pre, ...cur]))];
 }
 exports.getResetItems = getResetItems;
+/**
+ * Find whether or not the commit should be tagged or not
+ * @param {BumperOptionsFile} options
+ * @param {RuleTrigger} trigger
+ * @param {string} branch
+ * @returns {boolean}
+ */
+function getTag(options, trigger, branch) {
+    const rules = getRules(options, trigger, branch);
+    return rules.reduce((pre, cur) => pre || (cur.tag || false), false);
+}
+exports.getTag = getTag;
 /**
  * Returns key value object of version item and its value.
  * @param options

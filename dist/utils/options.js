@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,14 +27,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getFiles = exports.getBumperOptions = exports.getBranchFromRef = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
 const definedSchemes = __importStar(require("../schemes.json"));
 const utils_1 = require("./utils");
 const core = __importStar(require("@actions/core"));
@@ -205,16 +218,19 @@ exports.normalizeFiles = normalizeFiles;
  *  - pull_request_review_comment: any
  */
 function getTrigger() {
-    let { eventName, payload } = github.context;
-    console.log(`Trigger -> ${eventName}`);
-    if (eventName === 'push' /*&& (payload as Webhooks.WebhookPayloadPush).created*/)
-        return 'commit';
-    else if (eventName === 'pull_request')
-        return 'pull-request';
-    else if (eventName === 'pull_request_review_comment')
-        return 'pr-comment';
-    console.warn("Event trigger not of type: commit, pull request or pr-comment.");
-    throw new Error("Invalid trigger event");
+    let { eventName } = github.context;
+    console.info(`Trigger -> ${eventName}`);
+    switch (eventName) {
+        case 'push':
+            return 'commit';
+        case 'pull_request':
+            return 'pull-request';
+        case 'pull_request_review_comment':
+            return 'pr-comment';
+        default:
+            console.warn("Event trigger not of type: commit, pull request or pr-comment.");
+            throw new Error("Invalid trigger event");
+    }
 }
 exports.getTrigger = getTrigger;
 /**
@@ -223,12 +239,13 @@ exports.getTrigger = getTrigger;
  */
 function getBumperState(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        const branch = getBranchFromRef(process.env.GITHUB_REF || ''), schemeRegExp = utils_1.getSchemeRegex(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield utils_1.getCurVersion(options), trigger = getTrigger(), newVersion = yield utils_1.bumpVersion(options, trigger, branch), files = getFiles(options);
+        const branch = getBranchFromRef(process.env.GITHUB_REF || ''), schemeRegExp = utils_1.getSchemeRegex(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield utils_1.getCurVersion(options), trigger = getTrigger(), tag = utils_1.getTag(options, trigger, branch), newVersion = yield utils_1.bumpVersion(options, trigger, branch), files = getFiles(options);
         const state = {
             curVersion,
             newVersion,
             schemeRegExp,
             schemeDefinition,
+            tag,
             trigger,
             branch,
             files
