@@ -86,7 +86,7 @@ export default class Git {
    * @return {Promise<Git>}
    */
   async pushBranch(branch: string): Promise<Git> {
-    await exec('git', ['push', this.remoteName, branch], this.execOptions);
+    await exec('git', ['push', '--tags', this.remoteName, branch], this.execOptions);
     return this;
   }
 
