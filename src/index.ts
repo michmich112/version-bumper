@@ -2,11 +2,12 @@ import * as core from '@actions/core';
 import * as fs from "fs";
 
 import { getBumperOptions, getBumperState } from "./utils/options";
-import BumperOptionsFile, { VersionFile } from "./lib/OptionsFile.types";
-import BumperState from "./lib/BumperState.type";
+import BumperOptionsFile, { VersionFile } from "./lib/types/OptionsFile.types";
+import BumperState from "./lib/types/BumperState.type";
 import * as readline from "readline";
-import { checkout, commitAndPush } from "./utils/gitUtils";
-import { CommitOptions } from "./lib/Git.types";
+import { commitAndPush } from "./utils/gitUtils";
+import { CommitOptions } from "./lib/types/Git.types";
+import Git from './lib/Git';
 
 
 const SUCCESS = 0,
@@ -24,7 +25,7 @@ async function main() {
 
     let state: BumperState = await getBumperState(options);
 
-    await checkout(state.branch);
+    await new Git().checkoutBranch(state.branch);
     await bump(state);
 
     const GIT_OPTIONS: CommitOptions = {

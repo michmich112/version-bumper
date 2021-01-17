@@ -1,5 +1,5 @@
-import BumperOptionsFile from "../lib/OptionsFile.types";
-import {getBumperOptions, getFiles, getSchemeDefinition} from "../utils/options";
+import BumperOptionsFile from "../lib/types/OptionsFile.types";
+import { getBumperOptions, getFiles } from "../utils/options";
 
 describe("Get Version files", () => {
     let options: BumperOptionsFile = {
@@ -10,7 +10,7 @@ describe("Get Version files", () => {
     };
 
     test("All VersionFile format", () => {
-        options.files = [{path: "./first/file/path.txt"}, {path: "./second/file/path.json", line: 69}]
+        options.files = [{path: "./first/file/path.txt"}, {path: "./second/file/path.json", line: 69}];
         let files = getFiles(options);
         expect(files).toStrictEqual([{path: "./first/file/path.txt"}, {path: "./second/file/path.json", line: 69}]);
     });

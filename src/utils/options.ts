@@ -1,6 +1,6 @@
-import BumperOptionsFile, { BumpRule, RuleTrigger, VersionFile } from "../lib/OptionsFile.types";
+import BumperOptionsFile, { BumpRule, RuleTrigger, VersionFile } from "../lib/types/OptionsFile.types";
 import * as definedSchemes from "../schemes.json";
-import BumperState from "../lib/BumperState.type";
+import BumperState from "../lib/types/BumperState.type";
 import { bumpVersion, getCurVersion, getSchemeRegex, getTag } from "./utils";
 
 import * as core from '@actions/core';
@@ -48,7 +48,7 @@ export function getSchemeDefinition(options: BumperOptionsFile): string {
  */
 export function getBranchFromRef(ref: string): string {
   const refPath = ref.split('/');
-  return refPath[refPath.length - 1];
+  return refPath[refPath.length - 1]; // last string in the ref is the branch name
 }
 
 /**

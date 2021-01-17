@@ -27,67 +27,84 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.commitAndPush = exports.push = exports.commit = exports.checkout = void 0;
-const core = __importStar(require("@actions/core"));
-const exec_1 = require("@actions/exec");
-const EXEC_OPTIONS = {
-    cwd: process.env.GITHUB_WORKSPACE,
-    listeners: {
-        stdline: core.debug,
-        stderr: core.error,
-        debug: core.debug,
-    },
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-const REMOTE_TAG = 'github';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.commitAndPush = exports.commit = exports.configureGit = void 0;
+const core = __importStar(require("@actions/core"));
+const Git_1 = __importDefault(require("../lib/Git"));
 /**
- * Checkout branch
- * @param branch
+ * Configure Git for our use case
+ * @param {CommitOptions} gitOptions
+ * @param {string} remoteName
+ * @param {Git} gitInterface
+ * @returns {Promise<Git>}
  */
-function checkout(branch) {
+function configureGit(gitOptions, remoteName = 'github', gitInterface) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield exec_1.exec('git', ['checkout', branch], EXEC_OPTIONS);
+        const { GITHUB_ACTOR, GITHUB_REPOSITORY } = process.env;
+        const ORIGIN = `https://${GITHUB_ACTOR}:${gitOptions.token}@github.com/${GITHUB_REPOSITORY}.git`;
+        const EXEC_OPTIONS = {
+            cwd: process.env.GITHUB_WORKSPACE,
+            listeners: {
+                stdline: core.debug,
+                stderr: (data) => {
+                    core.error(data.toString());
+                },
+                debug: core.debug,
+            },
+        };
+        const git = gitInterface !== null && gitInterface !== void 0 ? gitInterface : new Git_1.default({ execOptions: EXEC_OPTIONS });
+        // Configure git
+        yield git.configUserName(gitOptions.userName);
+        yield git.configUserEmail(gitOptions.userEmail);
+        // Add remote
+        yield git.addRemote(ORIGIN);
+        return git;
     });
 }
-exports.checkout = checkout;
+exports.configureGit = configureGit;
 /**
- * Commit changes
- * @param options
+ * Configure and commit all changes
+ * @param {CommitOptions} commitOptions
+ * @param {Git} gitInterface to use git commands
+ * @returns {Promise<Git>}
  */
-function commit(options) {
+function commit(commitOptions, gitInterface) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { GITHUB_ACTOR, GITHUB_REPOSITORY } = process.env, ORIGIN = `https://${GITHUB_ACTOR}:${options.token}@github.com/${GITHUB_REPOSITORY}.git`;
-        // Configure git
-        yield exec_1.exec('git', ['config', 'user.name', `"${options.userName}"`], EXEC_OPTIONS);
-        yield exec_1.exec('git', ['config', 'user.email', `"${options.userEmail}"`], EXEC_OPTIONS);
-        // Add remote
-        yield exec_1.exec('git', ['remote', 'add', REMOTE_TAG, ORIGIN], EXEC_OPTIONS);
+        const EXEC_OPTIONS = {
+            cwd: process.env.GITHUB_WORKSPACE,
+            listeners: {
+                stdline: core.debug,
+                stderr: (data) => {
+                    core.error(data.toString());
+                },
+                debug: core.debug,
+            },
+        };
+        const git = gitInterface !== null && gitInterface !== void 0 ? gitInterface : new Git_1.default({ execOptions: EXEC_OPTIONS });
         // Add all new modifications and deletions
-        yield exec_1.exec('git', ['add', '-u'], EXEC_OPTIONS);
+        yield git.stageNewModifications();
         // Commit all staged changes
-        yield exec_1.exec('git', ['commit', '-v', '-m', `"${options.message}"`], EXEC_OPTIONS);
+        yield git.commitStagedChanges(commitOptions.message);
         // Tag the commit if tag info is passed
-        if (options.tag) {
-            let { name, message } = options.tag;
-            yield exec_1.exec('git', ['tag', '-a', name, '-m', (message || '')]);
-        }
+        if (commitOptions.tag)
+            yield git.tagLatestCommit(commitOptions.tag);
+        return git;
     });
 }
 exports.commit = commit;
 /**
- * Push to remote
- * @param branch
+ * Commit and push all changed to the remote github repository
+ * @param {CommitOptions} options
+ * @returns {Promise<void>}
  */
-function push(branch) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield exec_1.exec('git', ['push', REMOTE_TAG, branch], EXEC_OPTIONS);
-    });
-}
-exports.push = push;
 function commitAndPush(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield commit(options);
-        yield push(options.branch);
+        let git = yield configureGit(options);
+        yield commit(options, git);
+        yield git.pushBranch(options.branch);
     });
 }
 exports.commitAndPush = commitAndPush;

@@ -1,4 +1,4 @@
-import BumperOptionsFile, { BumpRule, RuleTrigger } from "../lib/OptionsFile.types";
+import BumperOptionsFile, { BumpRule, RuleTrigger } from "../lib/types/OptionsFile.types";
 import * as fs from "fs";
 import * as readline from "readline";
 import { generateSchemeRegexp } from "./regExpParser";

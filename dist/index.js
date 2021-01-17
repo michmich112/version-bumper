@@ -34,12 +34,16 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const fs = __importStar(require("fs"));
 const options_1 = require("./utils/options");
 const readline = __importStar(require("readline"));
 const gitUtils_1 = require("./utils/gitUtils");
+const Git_1 = __importDefault(require("./lib/Git"));
 const SUCCESS = 0, FAILURE = 1;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -50,7 +54,7 @@ function main() {
         try {
             let options = yield options_1.getBumperOptions();
             let state = yield options_1.getBumperState(options);
-            yield gitUtils_1.checkout(state.branch);
+            yield new Git_1.default().checkoutBranch(state.branch);
             yield bump(state);
             const GIT_OPTIONS = {
                 userName: 'version-bumper',

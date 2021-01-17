@@ -1,4 +1,4 @@
-import { BumpRule, RuleTrigger } from '../lib/OptionsFile.types';
+import { BumpRule, RuleTrigger } from '../lib/types/OptionsFile.types';
 
 /**
  * Business rule to verify if the rule has to be applied or not

@@ -1,4 +1,4 @@
-import { BumpRule, RuleTrigger } from '../../lib/OptionsFile.types';
+import { BumpRule, RuleTrigger } from '../../lib/types/OptionsFile.types';
 import isRuleApplicable from '../isRuleApplicable';
 
 describe('[ RULE ] - isRuleApplicable', () => {
