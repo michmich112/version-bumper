@@ -14,6 +14,6 @@ jobs:
         with:
           node-version: '12'
 
-      - name: Install dependencies and test client
+      - name: Test action
         run: |
           npm run test
