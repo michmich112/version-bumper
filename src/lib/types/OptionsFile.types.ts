@@ -71,6 +71,11 @@ export interface BumpRule {
     comment?: string,
 
     /**
+     * Allows the bumper to create a commit tag for the bump
+     */
+    tag?: boolean,
+
+    /**
      * Optional branch on which the rule should take effect
      * This is a regexp and can be matched with a wildcard
      */

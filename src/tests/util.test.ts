@@ -7,7 +7,7 @@ import {
     getVersionMap,
     versionMapToString
 } from "../utils/utils";
-import BumperOptionsFile from "../lib/OptionsFile.types";
+import BumperOptionsFile from "../lib/types/OptionsFile.types";
 
 describe("Retrieve 1st level interbracket content", () => {
     test("Simple input case: pre[intra content]post", () => {

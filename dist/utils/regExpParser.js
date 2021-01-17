@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateSchemeRegexp = void 0;
 /**
  * scheme must be of form <tag><seperator>[<tag><seperator>]
  * tag will be used to generate commands

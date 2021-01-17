@@ -29,9 +29,10 @@ github-token: ${{ secrets.GITHUB_TOKEN }}
 #### **Required**: `scheme`
 Versioning scheme to use. Predefined schemes are:
 
-| Scheme   | Definition          |
-|----------|---------------------|
-| semantic | major.minor[.build] |
+| Scheme       | Definition          |
+|--------------|---------------------|
+| semantic     | major.minor[.build] |
+| org_semantic | major.minor.build   |
 
 Submit an issue to request additional predefined schemes.
 
@@ -89,14 +90,6 @@ Rule type definition:
  */
 interface BumpRule {
     /**
-     * Action that triggers the bump to occur
-     *    - commit: new commit on branch (includes the creation of a new branch),
-     *    - pull request: new pull request on branch,
-     * Note: your workflow must accept the 'push' event for the commit trigger and 'pull_request' event for pull-request trigger 
-     */
-    trigger: 'commit' | 'pull-request',
-
-    /**
      * Optional branch on which the rule should take effect
      * if no branch is passed the rule will take effect on every branch which triggers the workflow
      */
@@ -108,7 +101,6 @@ interface BumpRule {
      */
     bump?: string | string[],
 
-
     /**
      * Reset elements in the version number
      * E.g
@@ -117,6 +109,21 @@ interface BumpRule {
      * => 1.2.0
      */
     reset?: string | string[]
+    
+    /**
+     * Indicate that this bump should add a tag to the commit with the new version number
+     * If multiple rules match the current run, only one of them needs to allow the tag for it to take effect
+     */
+    tag?: boolean,
+
+    /**
+     * Action that triggers the bump to occur
+     *    - commit: new commit on branch (includes the creation of a new branch),
+     *    - pull request: new pull request on branch,
+     * Note: your workflow must accept the 'push' event for the commit trigger and 'pull_request' event for pull-request trigger 
+     */
+    trigger: 'commit' | 'pull-request',
+
 }
 ``` 
 Example usage:
@@ -207,11 +214,6 @@ interface BumperOptionsFile {
 interface BumpRule {
 
     /**
-     * Action that triggers the bump to occur
-     */
-    trigger: 'commit' | 'pull-request',
-
-    /**
      * Optional branch on which the rule should take effect
      */
     branch?: string,
@@ -229,6 +231,17 @@ interface BumpRule {
      * => 1.2.0
      */
     reset?: string | string[]
+
+    /**
+     * Indicate that this bump should add a tag to the commit with the new version number
+     * If multiple rules match the current run, only one of them needs to allow the tag for it to take effect
+     */
+    tag?: boolean,
+
+    /**
+     * Action that triggers the bump to occur
+     */
+    trigger: 'commit' | 'pull-request',
 
 }
 ```
