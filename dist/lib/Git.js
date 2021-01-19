@@ -100,8 +100,7 @@ class Git {
      */
     pushBranch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            const ret = yield exec_1.exec('git', ['push', '-u', '--tags', this.remoteName, branch], this.execOptions);
-            console.info('return ', ret);
+            yield exec_1.exec('git', ['push', '-u', '--tags', this.remoteName, branch], this.execOptions);
             return this;
         });
     }
