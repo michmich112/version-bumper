@@ -50,7 +50,7 @@ function configureGit(gitOptions, remoteName = 'github', gitInterface) {
             listeners: {
                 stdline: core.debug,
                 stderr: (data) => {
-                    core.error(data.toString());
+                    core.warning(data.toString());
                 },
                 debug: core.debug,
             },
