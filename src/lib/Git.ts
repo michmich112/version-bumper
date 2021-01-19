@@ -6,7 +6,7 @@ export default class Git {
   private readonly remoteName: string;
 
   constructor(params?: { execOptions?: ExecOptions, remoteName?: string }) {
-    this.execOptions = params?.execOptions ;
+    this.execOptions = params?.execOptions;
     this.remoteName = params?.remoteName ?? 'github';
   }
 
@@ -76,7 +76,7 @@ export default class Git {
    */
   async tagLatestCommit(tag: Tag): Promise<Git> {
     const { name, message } = tag;
-    await exec('git', ['tag', '-a', name, '-m', (message || '')], this.execOptions);
+    await exec('git', ['tag', '-a', name, '-m', (message || name)], this.execOptions);
     return this;
   }
 
@@ -86,7 +86,7 @@ export default class Git {
    * @return {Promise<Git>}
    */
   async pushBranch(branch: string): Promise<Git> {
-    await exec('git', ['push', '--tags', this.remoteName, branch], this.execOptions);
+    await exec('git', ['push', '-u', '--tags', this.remoteName, branch], this.execOptions);
     return this;
   }
 

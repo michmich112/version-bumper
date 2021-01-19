@@ -89,7 +89,7 @@ class Git {
     tagLatestCommit(tag) {
         return __awaiter(this, void 0, void 0, function* () {
             const { name, message } = tag;
-            yield exec_1.exec('git', ['tag', '-a', name, '-m', (message || '')], this.execOptions);
+            yield exec_1.exec('git', ['tag', '-a', name, '-m', (message || name)], this.execOptions);
             return this;
         });
     }
@@ -100,7 +100,7 @@ class Git {
      */
     pushBranch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('git', ['push', this.remoteName, branch], this.execOptions);
+            yield exec_1.exec('git', ['push', '-u', '--tags', this.remoteName, branch], this.execOptions);
             return this;
         });
     }
