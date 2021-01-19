@@ -19,7 +19,7 @@ export async function configureGit(gitOptions: CommitOptions,
     listeners: {
       stdline: core.debug,
       stderr: (data: Buffer) => {
-        core.error(data.toString());
+        core.warning(data.toString());
       },
       debug: core.debug,
     },
