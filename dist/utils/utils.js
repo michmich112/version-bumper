@@ -172,7 +172,7 @@ exports.getRules = getRules;
 function getBumpItems(options, trigger, branch) {
     const rules = getRules(options, trigger, branch);
     return [...new Set(rules.map((rule) => rule.bump ? Array.isArray(rule.bump) ? rule.bump : [rule.bump] : [])
-            .reduce((pre, cur) => [...pre, ...cur]))];
+            .reduce((pre, cur) => [...pre, ...cur], []))];
 }
 exports.getBumpItems = getBumpItems;
 /**
@@ -185,7 +185,7 @@ exports.getBumpItems = getBumpItems;
 function getResetItems(options, trigger, branch) {
     const rules = getRules(options, trigger, branch);
     return [...new Set(rules.map((rule) => rule.reset ? Array.isArray(rule.reset) ? rule.reset : [rule.reset] : [])
-            .reduce((pre, cur) => [...pre, ...cur]))];
+            .reduce((pre, cur) => [...pre, ...cur], []))];
 }
 exports.getResetItems = getResetItems;
 /**
