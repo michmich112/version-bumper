@@ -121,7 +121,7 @@ export function getBumpItems(options: BumperOptionsFile, trigger: RuleTrigger, b
   const rules = getRules(options, trigger, branch);
   return [...new Set(
     rules.map((rule: BumpRule) => rule.bump ? Array.isArray(rule.bump) ? rule.bump : [rule.bump] : [])
-      .reduce((pre: string[], cur: string[]) => [...pre, ...cur])
+      .reduce((pre: string[], cur: string[]) => [...pre, ...cur], [])
   )];
 }
 
@@ -136,7 +136,7 @@ export function getResetItems(options: BumperOptionsFile, trigger: RuleTrigger, 
   const rules = getRules(options, trigger, branch);
   return [...new Set(
     rules.map((rule: BumpRule) => rule.reset ? Array.isArray(rule.reset) ? rule.reset : [rule.reset] : [])
-      .reduce((pre: string[], cur: string[]) => [...pre, ...cur])
+      .reduce((pre: string[], cur: string[]) => [...pre, ...cur], [])
   )];
 }
 

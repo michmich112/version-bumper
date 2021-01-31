@@ -216,6 +216,7 @@ exports.normalizeFiles = normalizeFiles;
  *  - push: [created]
  *  - pull_request: any
  *  - pull_request_review_comment: any
+ *  - workflow_dispatch: any
  */
 function getTrigger() {
     let { eventName } = github.context;
@@ -227,6 +228,8 @@ function getTrigger() {
             return 'pull-request';
         case 'pull_request_review_comment':
             return 'pr-comment';
+        case 'workflow_dispatch':
+            return 'manual';
         default:
             console.warn("Event trigger not of type: commit, pull request or pr-comment.");
             throw new Error("Invalid trigger event");

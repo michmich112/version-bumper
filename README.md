@@ -12,7 +12,6 @@ Example usage:
 options-file: './.github/version-bumper-options.json'
 ```
 
-
 #### **Required**: `github-token`
 Required github token used for committing version updates.
 
@@ -120,9 +119,11 @@ interface BumpRule {
      * Action that triggers the bump to occur
      *    - commit: new commit on branch (includes the creation of a new branch),
      *    - pull request: new pull request on branch,
-     * Note: your workflow must accept the 'push' event for the commit trigger and 'pull_request' event for pull-request trigger 
+     *    - manual: trigger the workflow manually using workflow_dispatch
+     * Note: your workflow must accept the 'push' event for the commit trigger and 'pull_request' event for pull-request trigger
+     * Note: your workflow must accept the 'workflow_dispatch' event to use the manual trigger
      */
-    trigger: 'commit' | 'pull-request',
+    trigger: 'commit' | 'pull-request' | 'manual',
 
 }
 ``` 
@@ -230,7 +231,7 @@ interface BumpRule {
      * set reset: ['build']
      * => 1.2.0
      */
-    reset?: string | string[]
+    reset?: string | string[],
 
     /**
      * Indicate that this bump should add a tag to the commit with the new version number
@@ -241,7 +242,10 @@ interface BumpRule {
     /**
      * Action that triggers the bump to occur
      */
-    trigger: 'commit' | 'pull-request',
+    trigger: 'commit' | 'pull-request' | 'pr-comment' | 'manual',
 
 }
 ```
+
+# Contributors
+Thank you to [jamieleecho](https://github.com/jamieleecho) for their help and contributions to the project!
