@@ -230,7 +230,7 @@ interface BumpRule {
      * set reset: ['build']
      * => 1.2.0
      */
-    reset?: string | string[]
+    reset?: string | string[],
 
     /**
      * Indicate that this bump should add a tag to the commit with the new version number
@@ -241,7 +241,7 @@ interface BumpRule {
     /**
      * Action that triggers the bump to occur
      */
-    trigger: 'commit' | 'pull-request',
+    trigger: 'commit' | 'pull-request' | 'pr-comment' | 'manual',
 
 }
 ```

@@ -558,6 +558,15 @@ describe("Bump Version tests", () => {
                     branch: 'release',
                     bump: 'major',
                     reset: ['minor', 'build']
+                },
+                // on any manual action bump build
+                { trigger: 'manual', bump: 'build' },
+                // on manual action on branch master, bump major and reset minor and build
+                {
+                    trigger: 'manual',
+                    branch: 'master',
+                    bump: 'major',
+                    reset: ['minor', 'build']
                 }
             ]
         };
@@ -576,27 +585,51 @@ describe("Bump Version tests", () => {
         }));
         test("Commit Trigger release branch Tests", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1; // should fetch version number 1.2.3
-            // commit on random branch should result in just a bump from the build tag
+            // commit on release branch should bump major, reset minor and build, bump build
             let newVersion = yield utils_1.bumpVersion(options, 'commit', 'release');
             expect(newVersion).toBe('2.0.1');
         }));
         test("Commit Trigger release branch Tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 2; // should fetch version number 1.2.3
-            // commit on random branch should result in just a bump from the build tag
+            // commit on release branch should bump major, reset minor and build, bump build
             let newVersion = yield utils_1.bumpVersion(options, 'commit', 'release');
             expect(newVersion).toBe('2.0.1');
         }));
         test("Commit Trigger master branch tests", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1; // should fetch version number 1.2.3
-            // commit on random branch should result in just a bump from the build tag
+            // commit on master branch should bump minor, reset and bump build
             let newVersion = yield utils_1.bumpVersion(options, 'commit', 'master');
             expect(newVersion).toBe('1.3.1');
         }));
         test("Commit Trigger master branch tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 2; // should fetch version number 1.2.3
-            // commit on random branch should result in just a bump from the build tag
+            // commit on master branch should bump minor, reset and bump build
             let newVersion = yield utils_1.bumpVersion(options, 'commit', 'master');
             expect(newVersion).toBe('1.3.1');
+        }));
+        test("Manual Trigger random branch Tests", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 1; // should fetch version number 1.2.3
+            // manual trigger on random branch should bump build tag
+            let newVersion = yield utils_1.bumpVersion(options, 'manual', 'random');
+            expect(newVersion).toBe('1.2.4');
+        }));
+        test("Manual Trigger random branch Tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 1; // should fetch version number 1.2.3
+            // manual trigger on random branch should bump build tag
+            let newVersion = yield utils_1.bumpVersion(options, 'manual', 'random');
+            expect(newVersion).toBe('1.2.4');
+        }));
+        test("Manual Trigger master branch tests", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 1; // should fetch version number 1.2.3
+            // manual trigger on master branch should bump major, reset minor and build, bump build
+            let newVersion = yield utils_1.bumpVersion(options, 'manual', 'master');
+            expect(newVersion).toBe('2.0.1');
+        }));
+        test("Manual Trigger master branch tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 2; // should fetch version number 1.2.3
+            // manual trigger on master branch should bump major, reset minor and build, bump build
+            let newVersion = yield utils_1.bumpVersion(options, 'manual', 'master');
+            expect(newVersion).toBe('2.0.1');
         }));
         // describe("Pull-request trigger tests", () => {});
         // describe("Comment trigger", () => {});
