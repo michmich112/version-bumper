@@ -25,6 +25,10 @@ async function main() {
 
     let state: BumperState = await getBumperState(options);
 
+    if(state.curVersion === state.newVersion) {
+      core.info('No bump rules applicable');
+      return SUCCESS;
+    }
     await new Git().checkoutBranch(state.branch);
     await bump(state);
 
