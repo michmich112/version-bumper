@@ -19,7 +19,6 @@ inputs:
   version-file:
     description: "File containing the current version. Can be in stringified JSON format for accessor information"
     required: false
-    default: './package.json'
   files:
     description: 'List of identifiers to files containing version information to be bumped. Must be in stringified JSON format.'
     required: false
