@@ -47,6 +47,7 @@ export function getSchemeDefinition(options: BumperOptionsFile): string {
  * @param ref
  */
 export function getBranchFromRef(ref: string): string {
+  console.log(ref);
   const refPath = ref.split('/');
   return refPath[refPath.length - 1]; // last string in the ref is the branch name
 }
