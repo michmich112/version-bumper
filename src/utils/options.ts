@@ -6,8 +6,6 @@ import { bumpVersion, getCurVersion, getSchemeRegex, getTag } from "./utils";
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as fs from "fs";
-import { triggerAsyncId } from 'async_hooks';
-
 
 /**
  * Normalizes options by associating the scheme if user has selected a preset scheme
@@ -203,12 +201,12 @@ export function getTrigger(): RuleTrigger {
       return 'commit';
     case 'pull_request':
       return 'pull-request';
-    case 'pull_request_review_comment':
-      return 'pr-comment';
+    // case 'pull_request_review_comment':
+    //   return 'pr-comment';
     case 'workflow_dispatch':
       return 'manual';
     default:
-      console.warn("Event trigger not of type: commit, pull request or pr-comment.");
+      console.warn("Event trigger not of type: commit, pull request or manual.");
       throw new Error("Invalid trigger event");
   }
 }

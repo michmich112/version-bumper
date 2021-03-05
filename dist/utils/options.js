@@ -241,12 +241,12 @@ function getTrigger() {
             return 'commit';
         case 'pull_request':
             return 'pull-request';
-        case 'pull_request_review_comment':
-            return 'pr-comment';
+        // case 'pull_request_review_comment':
+        //   return 'pr-comment';
         case 'workflow_dispatch':
             return 'manual';
         default:
-            console.warn("Event trigger not of type: commit, pull request or pr-comment.");
+            console.warn("Event trigger not of type: commit, pull request or manual.");
             throw new Error("Invalid trigger event");
     }
 }
