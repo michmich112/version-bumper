@@ -68,7 +68,7 @@ export interface BumpRule {
      * Comment that triggers the rule
      * Only used when the trigger is pr-comment
      */
-    comment?: string,
+    // comment?: string,
 
     /**
      * Allows the bumper to create a commit tag for the bump
@@ -103,7 +103,7 @@ export interface BumpRule {
 }
 
 export type VersionScheme = 'custom' | any;
-export type RuleTrigger = 'commit' | 'pull-request' | 'pr-comment' | 'manual';
+export type RuleTrigger = 'commit' | 'pull-request' | 'manual'; //| 'pr-comment'
 export type VersionReleaseStatus = 'alpha' | 'beta' | 'release-candidate' | 'release';
 export type Seperators = '.' | ',' | ';' | ':' | '-' | '_' | '>' | '<';
 export const seperators: Seperators[] = ['.' , ',' , ';' , ':' , '-' , '_' , '>' , '<'];

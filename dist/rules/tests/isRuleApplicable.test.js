@@ -50,7 +50,7 @@ describe('[ RULE ] - isRuleApplicable', () => {
         const rule = {
             trigger: 'commit',
         };
-        const trigger = 'pr-comment';
+        const trigger = 'manual';
         const branch = 'randomBranch';
         expect(isRuleApplicable_1.default(rule, trigger, branch)).toBe(false);
     });

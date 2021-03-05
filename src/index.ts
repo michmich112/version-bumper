@@ -25,6 +25,10 @@ async function main() {
 
     let state: BumperState = await getBumperState(options);
 
+    if(state.curVersion === state.newVersion) {
+      core.info('No bump rules applicable');
+      return SUCCESS;
+    }
     await new Git().checkoutBranch(state.branch);
     await bump(state);
 
@@ -32,7 +36,7 @@ async function main() {
       userName: 'version-bumper',
       userEmail: 'bumper@boringday.co',
       message: `Updated version ${state.curVersion} -> ${state.newVersion}.`,
-      tag: { name: state.newVersion },
+      tag: !state.tag ? { name: state.newVersion } : undefined,
       token: core.getInput('github-token'),
       branch: state.branch
     };

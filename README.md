@@ -242,7 +242,7 @@ interface BumpRule {
     /**
      * Action that triggers the bump to occur
      */
-    trigger: 'commit' | 'pull-request' | 'pr-comment' | 'manual',
+    trigger: 'commit' | 'pull-request' | 'manual',
 
 }
 ```
