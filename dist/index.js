@@ -54,13 +54,17 @@ function main() {
         try {
             let options = yield options_1.getBumperOptions();
             let state = yield options_1.getBumperState(options);
+            if (state.curVersion === state.newVersion) {
+                core.info('No bump rules applicable');
+                return SUCCESS;
+            }
             yield new Git_1.default().checkoutBranch(state.branch);
             yield bump(state);
             const GIT_OPTIONS = {
                 userName: 'version-bumper',
                 userEmail: 'bumper@boringday.co',
                 message: `Updated version ${state.curVersion} -> ${state.newVersion}.`,
-                tag: { name: state.newVersion },
+                tag: !state.tag ? { name: state.newVersion } : undefined,
                 token: core.getInput('github-token'),
                 branch: state.branch
             };

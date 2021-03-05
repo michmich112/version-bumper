@@ -51,7 +51,7 @@ describe('[ RULE ] - isRuleApplicable', () => {
     const rule: BumpRule = {
       trigger: 'commit',
     };
-    const trigger: RuleTrigger = 'pr-comment';
+    const trigger: RuleTrigger = 'manual';
     const branch = 'randomBranch';
     expect(isRuleApplicable(rule, trigger, branch)).toBe(false);
   });

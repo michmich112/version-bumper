@@ -7,7 +7,6 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as fs from "fs";
 
-
 /**
  * Normalizes options by associating the scheme if user has selected a preset scheme
  * @param options
@@ -44,11 +43,25 @@ export function getSchemeDefinition(options: BumperOptionsFile): string {
 
 /**
  * Get Branch name from reference
- * @param ref
+ * Only tested with the GITHUB_REF env var
+ * @param trigger
  */
-export function getBranchFromRef(ref: string): string {
-  const refPath = ref.split('/');
-  return refPath[refPath.length - 1]; // last string in the ref is the branch name
+export function getBranchFromTrigger(trigger: RuleTrigger): string {
+  let branch: string;
+  switch (trigger) {
+    case 'pull-request':
+      branch = process.env.GITHUB_HEAD_REF || '';
+      break;
+    case 'commit':
+    case 'manual':
+    default:
+      branch = process.env.GITHUB_REF?.substring('refs/heads/'.length) || '';
+      break;
+  }
+  core.info(`process.env.GITHUB_HEAD_REF: ${process.env.GITHUB_HEAD_REF}`);
+  core.info(`process.env.GITHUB_REF: ${process.env.GITHUB_REF}`);
+  core.info(`Current Branch identified: ${branch}`);
+  return branch;
 }
 
 /**
@@ -188,12 +201,12 @@ export function getTrigger(): RuleTrigger {
       return 'commit';
     case 'pull_request':
       return 'pull-request';
-    case 'pull_request_review_comment':
-      return 'pr-comment';
+    // case 'pull_request_review_comment':
+    //   return 'pr-comment';
     case 'workflow_dispatch':
       return 'manual';
     default:
-      console.warn("Event trigger not of type: commit, pull request or pr-comment.");
+      console.warn("Event trigger not of type: commit, pull request or manual.");
       throw new Error("Invalid trigger event");
   }
 }
@@ -203,11 +216,11 @@ export function getTrigger(): RuleTrigger {
  * @param options
  */
 export async function getBumperState(options: BumperOptionsFile): Promise<BumperState> {
-  const branch = getBranchFromRef(process.env.GITHUB_REF || ''),
+  const trigger: RuleTrigger = getTrigger(),
+    branch = getBranchFromTrigger(trigger),
     schemeRegExp = getSchemeRegex(options),
     schemeDefinition = getSchemeDefinition(options),
     curVersion = await getCurVersion(options),
-    trigger: RuleTrigger = getTrigger(),
     tag: boolean = getTag(options, trigger, branch),
     newVersion = await bumpVersion(options, trigger, branch),
     files = getFiles(options);
@@ -221,6 +234,6 @@ export async function getBumperState(options: BumperOptionsFile): Promise<Bumper
     branch,
     files
   };
-  console.log(`State -> ${JSON.stringify(state)}`);
+  core.info(`State -> ${JSON.stringify(state)}`);
   return state;
 }

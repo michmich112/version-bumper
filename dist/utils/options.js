@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getFiles = exports.getBumperOptions = exports.getBranchFromRef = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
+exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getFiles = exports.getBumperOptions = exports.getBranchFromTrigger = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
 const definedSchemes = __importStar(require("../schemes.json"));
 const utils_1 = require("./utils");
 const core = __importStar(require("@actions/core"));
@@ -74,13 +74,28 @@ function getSchemeDefinition(options) {
 exports.getSchemeDefinition = getSchemeDefinition;
 /**
  * Get Branch name from reference
- * @param ref
+ * Only tested with the GITHUB_REF env var
+ * @param trigger
  */
-function getBranchFromRef(ref) {
-    const refPath = ref.split('/');
-    return refPath[refPath.length - 1]; // last string in the ref is the branch name
+function getBranchFromTrigger(trigger) {
+    var _a;
+    let branch;
+    switch (trigger) {
+        case 'pull-request':
+            branch = process.env.GITHUB_HEAD_REF || '';
+            break;
+        case 'commit':
+        case 'manual':
+        default:
+            branch = ((_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.substring('refs/heads/'.length)) || '';
+            break;
+    }
+    core.info(`process.env.GITHUB_HEAD_REF: ${process.env.GITHUB_HEAD_REF}`);
+    core.info(`process.env.GITHUB_REF: ${process.env.GITHUB_REF}`);
+    core.info(`Current Branch identified: ${branch}`);
+    return branch;
 }
-exports.getBranchFromRef = getBranchFromRef;
+exports.getBranchFromTrigger = getBranchFromTrigger;
 /**
  * Get all bumper options
  */
@@ -226,12 +241,12 @@ function getTrigger() {
             return 'commit';
         case 'pull_request':
             return 'pull-request';
-        case 'pull_request_review_comment':
-            return 'pr-comment';
+        // case 'pull_request_review_comment':
+        //   return 'pr-comment';
         case 'workflow_dispatch':
             return 'manual';
         default:
-            console.warn("Event trigger not of type: commit, pull request or pr-comment.");
+            console.warn("Event trigger not of type: commit, pull request or manual.");
             throw new Error("Invalid trigger event");
     }
 }
@@ -242,7 +257,7 @@ exports.getTrigger = getTrigger;
  */
 function getBumperState(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        const branch = getBranchFromRef(process.env.GITHUB_REF || ''), schemeRegExp = utils_1.getSchemeRegex(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield utils_1.getCurVersion(options), trigger = getTrigger(), tag = utils_1.getTag(options, trigger, branch), newVersion = yield utils_1.bumpVersion(options, trigger, branch), files = getFiles(options);
+        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), schemeRegExp = utils_1.getSchemeRegex(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield utils_1.getCurVersion(options), tag = utils_1.getTag(options, trigger, branch), newVersion = yield utils_1.bumpVersion(options, trigger, branch), files = getFiles(options);
         const state = {
             curVersion,
             newVersion,
@@ -253,7 +268,7 @@ function getBumperState(options) {
             branch,
             files
         };
-        console.log(`State -> ${JSON.stringify(state)}`);
+        core.info(`State -> ${JSON.stringify(state)}`);
         return state;
     });
 }
