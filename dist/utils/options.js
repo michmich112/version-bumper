@@ -77,6 +77,7 @@ exports.getSchemeDefinition = getSchemeDefinition;
  * @param ref
  */
 function getBranchFromRef(ref) {
+    core.info(ref);
     const refPath = ref.split('/');
     return refPath[refPath.length - 1]; // last string in the ref is the branch name
 }
