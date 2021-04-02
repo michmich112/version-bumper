@@ -64,7 +64,7 @@ function main() {
                 userName: 'version-bumper',
                 userEmail: 'bumper@boringday.co',
                 message: `Updated version ${state.curVersion} -> ${state.newVersion}.`,
-                tag: !state.tag ? { name: state.newVersion } : undefined,
+                tag: state.tag ? { name: state.newVersion } : undefined,
                 token: core.getInput('github-token'),
                 branch: state.branch
             };
