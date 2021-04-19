@@ -38,7 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bumpVersion = exports.versionMapToString = exports.getOptionalItems = exports.getOptional = exports.getVersionMap = exports.getTag = exports.getResetItems = exports.getBumpItems = exports.getRules = exports.getCurVersion = exports.getSchemeRegex = exports.getIntrabracketContent = exports.verifyTrigger = void 0;
+exports.bumpVersion = exports.versionMapToString = exports.getSuffixes = exports.getPrefixes = exports.getOptionalItems = exports.getOptional = exports.getVersionMap = exports.getTag = exports.getResetItems = exports.getBumpItems = exports.getRules = exports.getCurVersion = exports.getSchemeRegex = exports.getIntrabracketContent = exports.verifyTrigger = void 0;
 const fs = __importStar(require("fs"));
 const readline = __importStar(require("readline"));
 const regExpParser_1 = require("./regExpParser");
@@ -90,6 +90,26 @@ function getSchemeRegex(options) {
 }
 exports.getSchemeRegex = getSchemeRegex;
 /**
+ * Adds prefix and suffix recognition to version scheme regex
+ * only one prefix and one suffix will be detected maximally
+ * result of the form: (prefix1|prefix2)?<scheme regExp>(suffix1|suffix2)?
+ * @param {RegExp} schemeRegExp
+ * @param {BumperOptionsFile} options
+ * @returns {RegExp}
+ */
+function addPrefixAndSuffixRecognition(schemeRegExp, options) {
+    const prefixes = "(" + getPrefixes(options).map(p => escapeRegExp(p)).join('|') + ")?"; // (<prefixes>)?
+    const suffixes = "(" + getSuffixes(options).map(s => escapeRegExp(s)).join('|') + ")?"; // (<suffixes>)?
+    return new RegExp(prefixes + schemeRegExp.source + suffixes);
+}
+/**
+ * escapes the chars in a string that are regexp wildcards
+ * @param string
+ */
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+/**
  * Extracts the current version form the specified version file using the following strategy:
  *  - if user has specified a line number -> got to that line while identifying the initial match
  *  - if the version is found on the specified line return it.
@@ -100,8 +120,11 @@ exports.getSchemeRegex = getSchemeRegex;
 function getCurVersion(options) {
     var e_1, _a;
     return __awaiter(this, void 0, void 0, function* () {
-        let { path, line } = options.versionFile, regExp = getSchemeRegex(options);
-        console.log(regExp);
+        let { path, line } = options.versionFile;
+        const schemeRegExp = getSchemeRegex(options);
+        console.info("scheme regExp: ", schemeRegExp);
+        const regExp = addPrefixAndSuffixRecognition(schemeRegExp, options);
+        console.info("final regExp: ", regExp);
         // verify the path actually corresponds to a file
         if (!fs.existsSync(path))
             throw new Error(`Version file with path ${path} does not exist.`);
@@ -165,12 +188,9 @@ exports.getRules = getRules;
 /**
  * Extracts the items to bump based on the trigger and the branch
  * The branch is set as the destination branch for pr requests
- * @param options
- * @param trigger
- * @param branch
+ * @param rules {BumpRule[]} applicable rules for the current execution context
  */
-function getBumpItems(options, trigger, branch) {
-    const rules = getRules(options, trigger, branch);
+function getBumpItems(rules) {
     return [...new Set(rules.map((rule) => rule.bump ? Array.isArray(rule.bump) ? rule.bump : [rule.bump] : [])
             .reduce((pre, cur) => [...pre, ...cur], []))];
 }
@@ -178,16 +198,31 @@ exports.getBumpItems = getBumpItems;
 /**
  * Extracts the items to reset based on the trigger and the branch
  * The branch is set as the destination branch for pr requests
- * @param options
- * @param trigger
- * @param branch
+ * @param rules {BumpRule[]} applicable rules for the current execution context
  */
-function getResetItems(options, trigger, branch) {
-    const rules = getRules(options, trigger, branch);
+function getResetItems(rules) {
     return [...new Set(rules.map((rule) => rule.reset ? Array.isArray(rule.reset) ? rule.reset : [rule.reset] : [])
             .reduce((pre, cur) => [...pre, ...cur], []))];
 }
 exports.getResetItems = getResetItems;
+/**
+ * finds the first prefix definition int he applicable rules and returns it
+ * @param {BumpRule[]} rules
+ * @returns {BumpRule | undefined}
+ */
+function getApplicablePrefix(rules) {
+    var _a, _b;
+    return (_b = (_a = rules.find(r => r.prefix)) === null || _a === void 0 ? void 0 : _a.prefix) !== null && _b !== void 0 ? _b : '';
+}
+/**
+ * finds the first suffix definition in the applicable rules and returns it
+ * @param {BumpRule[]} rules
+ * @returns {BumpRule | undefined}
+ */
+function getApplicableSuffix(rules) {
+    var _a, _b;
+    return (_b = (_a = rules.find(r => r.suffix)) === null || _a === void 0 ? void 0 : _a.suffix) !== null && _b !== void 0 ? _b : '';
+}
 /**
  * Find whether or not the commit should be tagged or not
  * @param {BumperOptionsFile} options
@@ -248,6 +283,28 @@ function getOptionalItems(scheme) {
 }
 exports.getOptionalItems = getOptionalItems;
 /**
+ * Get all the possible prefixes from the rule bumps
+ * @param {BumperOptionsFile} options
+ * @returns {string[]}
+ */
+function getPrefixes(options) {
+    return [...options.rules
+            .map(r => r.prefix)
+            .reduce((acc, cur) => cur ? acc.add(cur) : acc, new Set())];
+}
+exports.getPrefixes = getPrefixes;
+/**
+ * Get all the possible suffixes from the rule bumps
+ * @param {BumperOptionsFile} options
+ * @returns {string[]}
+ */
+function getSuffixes(options) {
+    return [...options.rules
+            .map(r => r.suffix)
+            .reduce((acc, cur) => cur ? acc.add(cur) : acc, new Set())];
+}
+exports.getSuffixes = getSuffixes;
+/**
  * Returns a string from the scheme with the correct values for each item
  * @param options
  * @param map
@@ -288,13 +345,18 @@ exports.versionMapToString = versionMapToString;
  */
 function bumpVersion(options, trigger, branch) {
     return __awaiter(this, void 0, void 0, function* () {
-        const curVersion = yield getCurVersion(options), resetItems = getResetItems(options, trigger, branch), bumpItems = getBumpItems(options, trigger, branch);
-        let versionMap = getVersionMap(options, curVersion);
+        const curVersion = yield getCurVersion(options);
+        const rules = getRules(options, trigger, branch);
+        const resetItems = getResetItems(rules);
+        const bumpItems = getBumpItems(rules);
+        const prefix = getApplicablePrefix(rules);
+        const suffix = getApplicableSuffix(rules);
+        const versionMap = getVersionMap(options, curVersion);
         for (let item of resetItems)
             versionMap[item] = 0; // reset items
         for (let item of bumpItems)
             versionMap[item] += 1; // bump items
-        return versionMapToString(options, versionMap);
+        return prefix + versionMapToString(options, versionMap) + suffix;
     });
 }
 exports.bumpVersion = bumpVersion;

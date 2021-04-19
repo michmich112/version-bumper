@@ -333,6 +333,83 @@ describe("Get Current version from files", () => {
             expect(e.message).toBe(`No match found in file. Unable to identify current version number.`);
         }
     }));
+    describe("Get current version with prefix", () => {
+        let filePath = "./src/tests/assets/INTEGRATION_VERSION.txt", options = {
+            scheme: "org_semantic",
+            versionFile: { path: filePath, line: 4 },
+            files: [],
+            rules: [
+                {
+                    prefix: "v.",
+                    branch: "prefix_1_branch",
+                    bump: "build",
+                    trigger: "commit"
+                },
+                {
+                    prefix: "alpha.",
+                    branch: "prefix_2_branch",
+                    bump: "minor",
+                    trigger: "commit"
+                },
+                {
+                    suffix: "-ALPHA",
+                    branch: "suffix_1_branch",
+                    bump: "build",
+                    trigger: "commit"
+                },
+                {
+                    suffix: "rc",
+                    branch: "suffix_2_branch",
+                    bump: "minor",
+                    trigger: "commit"
+                }
+            ]
+        };
+        test("Get current version that has Prefix 1", () => __awaiter(void 0, void 0, void 0, function* () {
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("v.1.0.2");
+        }));
+        test("Get current version that has Prefix 2", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 5;
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("alpha.2.3.5");
+        }));
+        test("Get correct version that has both prefixes in front", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 6;
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("v.2.3.5");
+        }));
+        test("Get current version that has Suffix 1", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 7;
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("2.3.5-ALPHA");
+        }));
+        test("Get current version that has Suffix 2", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 8;
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("6.7.8rc");
+        }));
+        test("Get current version that has Prefix 1 and Suffix 1", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 9;
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("v.1.0.2-ALPHA");
+        }));
+        test("Get current version that has Prefix 1 and Suffix 2", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 10;
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("v.4.5.6rc");
+        }));
+        test("Get current version that has Prefix 2 and Suffix 1", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 11;
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("alpha.3.5.6-ALPHA");
+        }));
+        test("Get current version that has Prefix 2 and Suffix 2", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 12;
+            const version = yield utils_1.getCurVersion(options);
+            expect(version).toBe("alpha.7.8.9rc");
+        }));
+    });
 });
 describe("Get optional version items", () => {
     test("No Optional case.", () => {
@@ -567,6 +644,20 @@ describe("Bump Version tests", () => {
                     branch: 'master',
                     bump: 'major',
                     reset: ['minor', 'build']
+                },
+                // on commit to release-candidate branch, bump major, reset minor and build, add -rc as suffix
+                {
+                    trigger: 'commit',
+                    branch: 'release-candidate',
+                    bump: 'major',
+                    reset: ['minor', 'build'],
+                    suffix: "-rc"
+                },
+                // on commit to branch version-tag, add prefix: v.
+                {
+                    trigger: 'commit',
+                    branch: 'version-tag',
+                    prefix: "v."
                 }
             ]
         };
@@ -630,6 +721,16 @@ describe("Bump Version tests", () => {
             // manual trigger on master branch should bump major, reset minor and build, bump build
             let newVersion = yield utils_1.bumpVersion(options, 'manual', 'master');
             expect(newVersion).toBe('2.0.1');
+        }));
+        test("Commit trigger with suffix", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 1;
+            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'release-candidate');
+            expect(newVersion).toBe('2.0.1-rc');
+        }));
+        test("Commit trigger with prefix", () => __awaiter(void 0, void 0, void 0, function* () {
+            options.versionFile.line = 1;
+            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'version-tag');
+            expect(newVersion).toBe("v.1.2.4");
         }));
         // describe("Pull-request trigger tests", () => {});
         // describe("Comment trigger", () => {});
