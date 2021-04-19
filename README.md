@@ -223,6 +223,11 @@ interface BumpRule {
      * What items in the version number need to be bumped
      */
     bump?: string | string[],
+  
+    /**
+     * Prefix to apply on the new version
+     */
+    prefix?: string,
 
     /**
      * Reset elements in the version number
@@ -232,6 +237,11 @@ interface BumpRule {
      * => 1.2.0
      */
     reset?: string | string[],
+  
+    /**
+     * Suffix to apply on the new version
+     */
+    suffix?: string,
 
     /**
      * Indicate that this bump should add a tag to the commit with the new version number
