@@ -398,7 +398,7 @@ describe("Get Current version from files", () => {
     }
   });
 
-  describe("Get current version with prefix", async () => {
+  describe("Get current version with prefix", () => {
     let filePath = "./src/tests/assets/INTEGRATION_VERSION.txt",
       options: BumperOptionsFile = {
         scheme: "org_semantic", // major.minor.build
@@ -858,13 +858,13 @@ describe("Bump Version tests", () => {
     test("Commit trigger with suffix", async () => {
       options.versionFile.line = 1;
       let newVersion: string = await bumpVersion(options, 'commit', 'release-candidate');
-      expect(newVersion).toBe('2.0-rc');
+      expect(newVersion).toBe('2.0.1-rc');
     });
 
     test("Commit trigger with prefix", async () => {
       options.versionFile.line = 1;
       let newVersion: string = await bumpVersion(options, 'commit', 'version-tag');
-      expect(newVersion).toBe("v.1.2.3");
+      expect(newVersion).toBe("v.1.2.4");
     });
     // describe("Pull-request trigger tests", () => {});
     // describe("Comment trigger", () => {});

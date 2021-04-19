@@ -333,7 +333,7 @@ describe("Get Current version from files", () => {
             expect(e.message).toBe(`No match found in file. Unable to identify current version number.`);
         }
     }));
-    describe("Get current version with prefix", () => __awaiter(void 0, void 0, void 0, function* () {
+    describe("Get current version with prefix", () => {
         let filePath = "./src/tests/assets/INTEGRATION_VERSION.txt", options = {
             scheme: "org_semantic",
             versionFile: { path: filePath, line: 4 },
@@ -409,7 +409,7 @@ describe("Get Current version from files", () => {
             const version = yield utils_1.getCurVersion(options);
             expect(version).toBe("alpha.7.8.9rc");
         }));
-    }));
+    });
 });
 describe("Get optional version items", () => {
     test("No Optional case.", () => {
@@ -725,12 +725,12 @@ describe("Bump Version tests", () => {
         test("Commit trigger with suffix", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1;
             let newVersion = yield utils_1.bumpVersion(options, 'commit', 'release-candidate');
-            expect(newVersion).toBe('2.0-rc');
+            expect(newVersion).toBe('2.0.1-rc');
         }));
         test("Commit trigger with prefix", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1;
             let newVersion = yield utils_1.bumpVersion(options, 'commit', 'version-tag');
-            expect(newVersion).toBe("v.1.2.3");
+            expect(newVersion).toBe("v.1.2.4");
         }));
         // describe("Pull-request trigger tests", () => {});
         // describe("Comment trigger", () => {});

@@ -138,12 +138,9 @@ export function getRules(options: BumperOptionsFile, trigger: RuleTrigger, branc
 /**
  * Extracts the items to bump based on the trigger and the branch
  * The branch is set as the destination branch for pr requests
- * @param options
- * @param trigger
- * @param branch
+ * @param rules {BumpRule[]} applicable rules for the current execution context
  */
-export function getBumpItems(options: BumperOptionsFile, trigger: RuleTrigger, branch: string): string[] {
-  const rules = getRules(options, trigger, branch);
+export function getBumpItems(rules: BumpRule[]): string[] {
   return [...new Set(
     rules.map((rule: BumpRule) => rule.bump ? Array.isArray(rule.bump) ? rule.bump : [rule.bump] : [])
       .reduce((pre: string[], cur: string[]) => [...pre, ...cur], [])
@@ -153,16 +150,31 @@ export function getBumpItems(options: BumperOptionsFile, trigger: RuleTrigger, b
 /**
  * Extracts the items to reset based on the trigger and the branch
  * The branch is set as the destination branch for pr requests
- * @param options
- * @param trigger
- * @param branch
+ * @param rules {BumpRule[]} applicable rules for the current execution context
  */
-export function getResetItems(options: BumperOptionsFile, trigger: RuleTrigger, branch: string): string[] {
-  const rules = getRules(options, trigger, branch);
+export function getResetItems(rules: BumpRule[]): string[] {
   return [...new Set(
     rules.map((rule: BumpRule) => rule.reset ? Array.isArray(rule.reset) ? rule.reset : [rule.reset] : [])
       .reduce((pre: string[], cur: string[]) => [...pre, ...cur], [])
   )];
+}
+
+/**
+ * finds the first prefix definition int he applicable rules and returns it
+ * @param {BumpRule[]} rules
+ * @returns {BumpRule | undefined}
+ */
+function getApplicablePrefix(rules: BumpRule[]): string {
+  return rules.find(r => r.prefix)?.prefix ?? '';
+}
+
+/**
+ * finds the first suffix definition in the applicable rules and returns it
+ * @param {BumpRule[]} rules
+ * @returns {BumpRule | undefined}
+ */
+function getApplicableSuffix(rules: BumpRule[]): string {
+  return rules.find(r => r.suffix)?.suffix ?? '';
 }
 
 /**
@@ -287,14 +299,16 @@ export function versionMapToString(options: BumperOptionsFile, map: { [index: st
  * @param branch
  */
 export async function bumpVersion(options: BumperOptionsFile, trigger: RuleTrigger, branch: string): Promise<string> {
-  const curVersion: string = await getCurVersion(options),
-    resetItems: string[] = getResetItems(options, trigger, branch),
-    bumpItems: string[] = getBumpItems(options, trigger, branch);
-
-  let versionMap = getVersionMap(options, curVersion);
+  const curVersion: string = await getCurVersion(options);
+  const rules: BumpRule[] = getRules(options, trigger, branch);
+  const resetItems: string[] = getResetItems(rules);
+  const bumpItems: string[] = getBumpItems(rules);
+  const prefix: string = getApplicablePrefix(rules);
+  const suffix: string = getApplicableSuffix(rules);
+  const versionMap = getVersionMap(options, curVersion);
 
   for (let item of resetItems) versionMap[item] = 0; // reset items
   for (let item of bumpItems) versionMap[item] += 1; // bump items
 
-  return versionMapToString(options, versionMap);
+  return prefix + versionMapToString(options, versionMap) + suffix;
 }

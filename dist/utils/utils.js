@@ -188,12 +188,9 @@ exports.getRules = getRules;
 /**
  * Extracts the items to bump based on the trigger and the branch
  * The branch is set as the destination branch for pr requests
- * @param options
- * @param trigger
- * @param branch
+ * @param rules {BumpRule[]} applicable rules for the current execution context
  */
-function getBumpItems(options, trigger, branch) {
-    const rules = getRules(options, trigger, branch);
+function getBumpItems(rules) {
     return [...new Set(rules.map((rule) => rule.bump ? Array.isArray(rule.bump) ? rule.bump : [rule.bump] : [])
             .reduce((pre, cur) => [...pre, ...cur], []))];
 }
@@ -201,16 +198,31 @@ exports.getBumpItems = getBumpItems;
 /**
  * Extracts the items to reset based on the trigger and the branch
  * The branch is set as the destination branch for pr requests
- * @param options
- * @param trigger
- * @param branch
+ * @param rules {BumpRule[]} applicable rules for the current execution context
  */
-function getResetItems(options, trigger, branch) {
-    const rules = getRules(options, trigger, branch);
+function getResetItems(rules) {
     return [...new Set(rules.map((rule) => rule.reset ? Array.isArray(rule.reset) ? rule.reset : [rule.reset] : [])
             .reduce((pre, cur) => [...pre, ...cur], []))];
 }
 exports.getResetItems = getResetItems;
+/**
+ * finds the first prefix definition int he applicable rules and returns it
+ * @param {BumpRule[]} rules
+ * @returns {BumpRule | undefined}
+ */
+function getApplicablePrefix(rules) {
+    var _a, _b;
+    return (_b = (_a = rules.find(r => r.prefix)) === null || _a === void 0 ? void 0 : _a.prefix) !== null && _b !== void 0 ? _b : '';
+}
+/**
+ * finds the first suffix definition in the applicable rules and returns it
+ * @param {BumpRule[]} rules
+ * @returns {BumpRule | undefined}
+ */
+function getApplicableSuffix(rules) {
+    var _a, _b;
+    return (_b = (_a = rules.find(r => r.suffix)) === null || _a === void 0 ? void 0 : _a.suffix) !== null && _b !== void 0 ? _b : '';
+}
 /**
  * Find whether or not the commit should be tagged or not
  * @param {BumperOptionsFile} options
@@ -333,13 +345,18 @@ exports.versionMapToString = versionMapToString;
  */
 function bumpVersion(options, trigger, branch) {
     return __awaiter(this, void 0, void 0, function* () {
-        const curVersion = yield getCurVersion(options), resetItems = getResetItems(options, trigger, branch), bumpItems = getBumpItems(options, trigger, branch);
-        let versionMap = getVersionMap(options, curVersion);
+        const curVersion = yield getCurVersion(options);
+        const rules = getRules(options, trigger, branch);
+        const resetItems = getResetItems(rules);
+        const bumpItems = getBumpItems(rules);
+        const prefix = getApplicablePrefix(rules);
+        const suffix = getApplicableSuffix(rules);
+        const versionMap = getVersionMap(options, curVersion);
         for (let item of resetItems)
             versionMap[item] = 0; // reset items
         for (let item of bumpItems)
             versionMap[item] += 1; // bump items
-        return versionMapToString(options, versionMap);
+        return prefix + versionMapToString(options, versionMap) + suffix;
     });
 }
 exports.bumpVersion = bumpVersion;
