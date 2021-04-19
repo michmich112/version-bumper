@@ -52,6 +52,28 @@ export function getSchemeRegex(options: BumperOptionsFile) {
 }
 
 /**
+ * Adds prefix and suffix recognition to version scheme regex
+ * only one prefix and one suffix will be detected maximally
+ * result of the form: (prefix1|prefix2)?<scheme regExp>(suffix1|suffix2)?
+ * @param {RegExp} schemeRegExp
+ * @param {BumperOptionsFile} options
+ * @returns {RegExp}
+ */
+function addPrefixAndSuffixRecognition(schemeRegExp: RegExp, options: BumperOptionsFile): RegExp {
+  const prefixes = "(" + getPrefixes(options).map(p => escapeRegExp(p)).join('|') + ")?"; // (<prefixes>)?
+  const suffixes = "(" + getSuffixes(options).map(s => escapeRegExp(s)).join('|') + ")?"; // (<suffixes>)?
+  return new RegExp(prefixes + schemeRegExp.source + suffixes);
+}
+
+/**
+ * escapes the chars in a string that are regexp wildcards
+ * @param string
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+/**
  * Extracts the current version form the specified version file using the following strategy:
  *  - if user has specified a line number -> got to that line while identifying the initial match
  *  - if the version is found on the specified line return it.
@@ -60,10 +82,13 @@ export function getSchemeRegex(options: BumperOptionsFile) {
  * @param options
  */
 export async function getCurVersion(options: BumperOptionsFile) {
-  let { path, line } = options.versionFile,
-    regExp = getSchemeRegex(options);
+  let { path, line } = options.versionFile;
 
-  console.log(regExp);
+  const schemeRegExp = getSchemeRegex(options);
+  console.info("scheme regExp: ", schemeRegExp);
+  const regExp = addPrefixAndSuffixRecognition(schemeRegExp, options);
+  console.info("final regExp: ", regExp);
+
   // verify the path actually corresponds to a file
   if (!fs.existsSync(path)) throw new Error(`Version file with path ${path} does not exist.`);
 
@@ -194,6 +219,28 @@ export function getOptionalItems(scheme: string) {
       ...getOptionalItems(cur)]; // recursively get optional from the current top level interbracket content
     else return [...pre, cur]; // if there is no other interabracket content then no need to recurse, this is the tag
   }, []);
+}
+
+/**
+ * Get all the possible prefixes from the rule bumps
+ * @param {BumperOptionsFile} options
+ * @returns {string[]}
+ */
+export function getPrefixes(options: BumperOptionsFile): string[] {
+  return [...options.rules
+    .map(r => r.prefix)
+    .reduce((acc: Set<string>, cur?: string) => cur ? acc.add(cur) : acc, new Set<string>())];
+}
+
+/**
+ * Get all the possible suffixes from the rule bumps
+ * @param {BumperOptionsFile} options
+ * @returns {string[]}
+ */
+export function getSuffixes(options: BumperOptionsFile): string[] {
+  return [...options.rules
+    .map(r => r.suffix)
+    .reduce((acc: Set<string>, cur?: string) => cur ? acc.add(cur) : acc, new Set<string>())];
 }
 
 /**

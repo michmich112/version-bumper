@@ -90,6 +90,26 @@ function getSchemeRegex(options) {
 }
 exports.getSchemeRegex = getSchemeRegex;
 /**
+ * Adds prefix and suffix recognition to version scheme regex
+ * only one prefix and one suffix will be detected maximally
+ * result of the form: (prefix1|prefix2)?<scheme regExp>(suffix1|suffix2)?
+ * @param {RegExp} schemeRegExp
+ * @param {BumperOptionsFile} options
+ * @returns {RegExp}
+ */
+function addPrefixAndSuffixRecognition(schemeRegExp, options) {
+    const prefixes = "(" + getPrefixes(options).map(p => escapeRegExp(p)).join('|') + ")?"; // (<prefixes>)?
+    const suffixes = "(" + getSuffixes(options).map(s => escapeRegExp(s)).join('|') + ")?"; // (<suffixes>)?
+    return new RegExp(prefixes + schemeRegExp.source + suffixes);
+}
+/**
+ * escapes the chars in a string that are regexp wildcards
+ * @param string
+ */
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+/**
  * Extracts the current version form the specified version file using the following strategy:
  *  - if user has specified a line number -> got to that line while identifying the initial match
  *  - if the version is found on the specified line return it.
@@ -100,8 +120,11 @@ exports.getSchemeRegex = getSchemeRegex;
 function getCurVersion(options) {
     var e_1, _a;
     return __awaiter(this, void 0, void 0, function* () {
-        let { path, line } = options.versionFile, regExp = getSchemeRegex(options);
-        console.log(regExp);
+        let { path, line } = options.versionFile;
+        const schemeRegExp = getSchemeRegex(options);
+        console.info("scheme regExp: ", schemeRegExp);
+        const regExp = addPrefixAndSuffixRecognition(schemeRegExp, options);
+        console.info("final regExp: ", regExp);
         // verify the path actually corresponds to a file
         if (!fs.existsSync(path))
             throw new Error(`Version file with path ${path} does not exist.`);
