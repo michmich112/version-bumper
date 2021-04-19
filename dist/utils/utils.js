@@ -38,7 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bumpVersion = exports.versionMapToString = exports.getOptionalItems = exports.getOptional = exports.getVersionMap = exports.getTag = exports.getResetItems = exports.getBumpItems = exports.getRules = exports.getCurVersion = exports.getSchemeRegex = exports.getIntrabracketContent = exports.verifyTrigger = void 0;
+exports.bumpVersion = exports.versionMapToString = exports.getSuffixes = exports.getPrefixes = exports.getOptionalItems = exports.getOptional = exports.getVersionMap = exports.getTag = exports.getResetItems = exports.getBumpItems = exports.getRules = exports.getCurVersion = exports.getSchemeRegex = exports.getIntrabracketContent = exports.verifyTrigger = void 0;
 const fs = __importStar(require("fs"));
 const readline = __importStar(require("readline"));
 const regExpParser_1 = require("./regExpParser");
@@ -247,6 +247,28 @@ function getOptionalItems(scheme) {
         }, []);
 }
 exports.getOptionalItems = getOptionalItems;
+/**
+ * Get all the possible prefixes from the rule bumps
+ * @param {BumperOptionsFile} options
+ * @returns {string[]}
+ */
+function getPrefixes(options) {
+    return [...options.rules
+            .map(r => r.prefix)
+            .reduce((acc, cur) => cur ? acc.add(cur) : acc, new Set())];
+}
+exports.getPrefixes = getPrefixes;
+/**
+ * Get all the possible suffixes from the rule bumps
+ * @param {BumperOptionsFile} options
+ * @returns {string[]}
+ */
+function getSuffixes(options) {
+    return [...options.rules
+            .map(r => r.suffix)
+            .reduce((acc, cur) => cur ? acc.add(cur) : acc, new Set())];
+}
+exports.getSuffixes = getSuffixes;
 /**
  * Returns a string from the scheme with the correct values for each item
  * @param options
