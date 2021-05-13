@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getFiles = exports.getBumperOptions = exports.getBranchFromTrigger = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
+exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getSkipOption = exports.getFiles = exports.getBumperOptions = exports.getBranchFromTrigger = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
 const definedSchemes = __importStar(require("../schemes.json"));
 const utils_1 = require("./utils");
 const core = __importStar(require("@actions/core"));
@@ -101,7 +101,7 @@ exports.getBranchFromTrigger = getBranchFromTrigger;
  */
 function getBumperOptions() {
     return __awaiter(this, void 0, void 0, function* () {
-        const optionsFile = core.getInput('options-file'), scheme = core.getInput('scheme'), customScheme = core.getInput('custom-scheme'), versionFile = core.getInput('version-file'), files = core.getInput('files'), rules = core.getInput('rules');
+        const optionsFile = core.getInput('options-file'), scheme = core.getInput('scheme'), skip = core.getInput('skip'), customScheme = core.getInput('custom-scheme'), versionFile = core.getInput('version-file'), files = core.getInput('files'), rules = core.getInput('rules');
         let error = ""; // error message
         let bumperOptions = {};
         let err = (message) => {
@@ -210,6 +210,14 @@ function getFiles(options) {
 }
 exports.getFiles = getFiles;
 /**
+ * Check if should add [SKIP] prefix
+ * @param options {skip}
+ */
+function getSkipOption(options) {
+    return options.skip || false;
+}
+exports.getSkipOption = getSkipOption;
+/**
  * Normalize the file format
  * @param files
  */
@@ -257,10 +265,11 @@ exports.getTrigger = getTrigger;
  */
 function getBumperState(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), schemeRegExp = utils_1.getSchemeRegex(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield utils_1.getCurVersion(options), tag = utils_1.getTag(options, trigger, branch), newVersion = yield utils_1.bumpVersion(options, trigger, branch), files = getFiles(options);
+        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), skip = getSkipOption(options), schemeRegExp = utils_1.getSchemeRegex(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield utils_1.getCurVersion(options), tag = utils_1.getTag(options, trigger, branch), newVersion = yield utils_1.bumpVersion(options, trigger, branch), files = getFiles(options);
         const state = {
             curVersion,
             newVersion,
+            skip,
             schemeRegExp,
             schemeDefinition,
             tag,

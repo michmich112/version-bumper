@@ -4,6 +4,7 @@
 export default interface BumperOptionsFile {
     scheme: VersionScheme,
     schemeDefinition?: string,
+    skip?: boolean,
     versionFile: VersionFile,
     files: (VersionFile | string)[],
     rules: BumpRule[]

@@ -70,6 +70,7 @@ export function getBranchFromTrigger(trigger: RuleTrigger): string {
 export async function getBumperOptions(): Promise<BumperOptionsFile> {
   const optionsFile = core.getInput('options-file'),
     scheme = core.getInput('scheme'),
+    skip = core.getInput('skip'),
     customScheme = core.getInput('custom-scheme'),
     versionFile = core.getInput('version-file'),
     files = core.getInput('files'),
@@ -170,6 +171,14 @@ export function getFiles(options: BumperOptionsFile): VersionFile[] {
 }
 
 /**
+ * Check if should add [SKIP] prefix
+ * @param options {skip}
+ */
+export function getSkipOption(options: BumperOptionsFile): boolean {
+  return options.skip || false;
+}
+
+/**
  * Normalize the file format
  * @param files
  */
@@ -218,6 +227,7 @@ export function getTrigger(): RuleTrigger {
 export async function getBumperState(options: BumperOptionsFile): Promise<BumperState> {
   const trigger: RuleTrigger = getTrigger(),
     branch = getBranchFromTrigger(trigger),
+    skip = getSkipOption(options),
     schemeRegExp = getSchemeRegex(options),
     schemeDefinition = getSchemeDefinition(options),
     curVersion = await getCurVersion(options),
@@ -227,6 +237,7 @@ export async function getBumperState(options: BumperOptionsFile): Promise<Bumper
   const state = {
     curVersion,
     newVersion,
+    skip,
     schemeRegExp,
     schemeDefinition,
     tag,

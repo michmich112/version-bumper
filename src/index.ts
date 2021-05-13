@@ -35,7 +35,7 @@ async function main() {
     const GIT_OPTIONS: CommitOptions = {
       userName: 'version-bumper',
       userEmail: 'bumper@boringday.co',
-      message: `Updated version ${state.curVersion} -> ${state.newVersion}.`,
+      message:  state.skip ? '[SKIP] ': '' + `Updated version ${state.curVersion} -> ${state.newVersion}.`,
       tag: state.tag ? { name: state.newVersion } : undefined,
       token: core.getInput('github-token'),
       branch: state.branch
