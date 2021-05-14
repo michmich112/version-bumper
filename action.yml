@@ -25,6 +25,9 @@ inputs:
   rules:
     description: 'List of versioning rules'
     required: false
+  skip:
+    description: 'Adds [SKIP] prefix to the commit message to prevent CI/CD build'
+    required: false
   # Github token to commit the bumps
   github-token:
     description: 'Authorized github token'
