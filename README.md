@@ -259,3 +259,6 @@ interface BumpRule {
 
 # Contributors
 Thank you to [jamieleecho](https://github.com/jamieleecho) for their help and contributions to the project!
+
+# Notes
+This action uses the `gh-action-stats` package to track usage. See the data collected at [gh-action-stats-js](https://github.com/michmich112/gh-action-stats-js).
