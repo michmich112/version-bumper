@@ -48,6 +48,10 @@ Example: `main.secondary[->patch]`.\
 If we have `main:1`, `secondary:0` ,`patch:0` the resulting version printout will be `1.0`.\
 If `patch:1` the resulting version printout will be `1.0->1`.
 
+
+#### **Optional**: `skip`
+Adds [SKIP] prefix to the commit message to prevent CI/CD build.
+
 #### **Required**: `version-file`
 File path where the current version can be found.
 
@@ -199,6 +203,9 @@ interface BumperOptionsFile {
     
     // use for custom scheme definitions
     schemeDefinition?: string,
+
+    // Add the [SKIP] prefix to skip build
+    skip?: boolean,
     
     // path file containing the current version
     // may include line if other possible matches
@@ -258,7 +265,10 @@ interface BumpRule {
 ```
 
 # Contributors
-Thank you to [jamieleecho](https://github.com/jamieleecho) for their help and contributions to the project!
+Thank you to 
+- [jamieleecho](https://github.com/jamieleecho)
+- [migueltarga](https://github.com/migueltarga)
+for their help and contributions to the project!
 
 # Notes
 This action uses the `gh-action-stats` package to track usage. See the data collected at [gh-action-stats-js](https://github.com/michmich112/gh-action-stats-js).
