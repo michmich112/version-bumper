@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const fs = __importStar(require("fs"));
+const gh_action_stats_1 = __importDefault(require("gh-action-stats"));
 const options_1 = require("./utils/options");
 const readline = __importStar(require("readline"));
 const gitUtils_1 = require("./utils/gitUtils");
@@ -47,6 +48,7 @@ const Git_1 = __importDefault(require("./lib/Git"));
 const SUCCESS = 0, FAILURE = 1;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
+        gh_action_stats_1.default();
         if (!core.getInput('github-token')) {
             core.error("Github token required");
             return FAILURE;
@@ -63,7 +65,7 @@ function main() {
             const GIT_OPTIONS = {
                 userName: 'version-bumper',
                 userEmail: 'bumper@boringday.co',
-                message: `Updated version ${state.curVersion} -> ${state.newVersion}.`,
+                message: state.skip ? '[SKIP] ' : '' + `Updated version ${state.curVersion} -> ${state.newVersion}.`,
                 tag: state.tag ? { name: state.newVersion } : undefined,
                 token: core.getInput('github-token'),
                 branch: state.branch

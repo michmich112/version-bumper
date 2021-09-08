@@ -4,6 +4,7 @@
 export default interface BumperOptionsFile {
     scheme: VersionScheme,
     schemeDefinition?: string,
+    skip?: boolean,
     versionFile: VersionFile,
     files: (VersionFile | string)[],
     rules: BumpRule[]
@@ -100,6 +101,22 @@ export interface BumpRule {
      * => 1.2.0
      */
     reset?: string | string[]
+
+    /**
+     * Set a prefix on the version when bumped
+     * with version desc = major.minor[.build] -> current 1.2.3
+     * set prefix: 'v.'
+     * => v.1.2.3
+     */
+    prefix?: string
+
+    /**
+     * Set a suffix on the version when bumped
+     * with version desc = major.minor[.build] -> current 1.2.3
+     * set suffix: '-alpha'
+     * => 1.2.3-alpha
+     */
+    suffix?: string
 }
 
 export type VersionScheme = 'custom' | any;

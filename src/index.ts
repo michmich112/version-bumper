@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as fs from "fs";
+import collectStats from "gh-action-stats";
 
 import { getBumperOptions, getBumperState } from "./utils/options";
 import BumperOptionsFile, { VersionFile } from "./lib/types/OptionsFile.types";
@@ -14,6 +15,7 @@ const SUCCESS = 0,
   FAILURE = 1;
 
 async function main() {
+  collectStats();
 
   if (!core.getInput('github-token')) {
     core.error("Github token required");
@@ -25,7 +27,7 @@ async function main() {
 
     let state: BumperState = await getBumperState(options);
 
-    if(state.curVersion === state.newVersion) {
+    if (state.curVersion === state.newVersion) {
       core.info('No bump rules applicable');
       return SUCCESS;
     }
@@ -35,7 +37,7 @@ async function main() {
     const GIT_OPTIONS: CommitOptions = {
       userName: 'version-bumper',
       userEmail: 'bumper@boringday.co',
-      message: `Updated version ${state.curVersion} -> ${state.newVersion}.`,
+      message: state.skip ? '[SKIP] ' : '' + `Updated version ${state.curVersion} -> ${state.newVersion}.`,
       tag: state.tag ? { name: state.newVersion } : undefined,
       token: core.getInput('github-token'),
       branch: state.branch
