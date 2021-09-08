@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as fs from "fs";
-import collectStats from "gh-actions-stats";
+import collectStats from "gh-action-stats";
 
 import { getBumperOptions, getBumperState } from "./utils/options";
 import BumperOptionsFile, { VersionFile } from "./lib/types/OptionsFile.types";
