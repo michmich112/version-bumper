@@ -1,23 +1,12 @@
 const https = require('https');
-
-function getRunMetadata() {
-  const envVars = [
-    'GITHUB_RUN_ID',
-    'GITHUB_ACTION',
-    'GITHUB_ACTOR',
-    'GITHUB_REPOSITORY',
-    'GITHUB_REF',
-    'GITHUB_HEAD_REF',
-    'GITHUB_BASE_REF',
-    'RUNNER_OS'
-  ];
-  return envVars.map(v => ({ [v.toLowerCase()]: process.env[v] || null }))
-    .reduce((acc, cur) => ({ ...acc, ...cur }))
-}
+const { getActionMetadataFromDirname, getRunMetadata } = require('./utils.js');
 
 function collectStats() {
 
-  const data = JSON.stringify(getRunMetadata());
+  const data = JSON.stringify({
+    ...getRunMetadata(),
+    ...getActionMetadataFromDirname(__dirname)
+  });
 
   const options = {
     hostname: 'us-central1-gh-action-stats.cloudfunctions.net',
