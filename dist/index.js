@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -48,14 +48,14 @@ const Git_1 = __importDefault(require("./lib/Git"));
 const SUCCESS = 0, FAILURE = 1;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        gh_action_stats_1.default();
+        (0, gh_action_stats_1.default)();
         if (!core.getInput('github-token')) {
             core.error("Github token required");
             return FAILURE;
         }
         try {
-            let options = yield options_1.getBumperOptions();
-            let state = yield options_1.getBumperState(options);
+            let options = yield (0, options_1.getBumperOptions)();
+            let state = yield (0, options_1.getBumperState)(options);
             if (state.curVersion === state.newVersion) {
                 core.info('No bump rules applicable');
                 return SUCCESS;
@@ -70,7 +70,7 @@ function main() {
                 token: core.getInput('github-token'),
                 branch: state.branch
             };
-            yield gitUtils_1.commitAndPush(GIT_OPTIONS);
+            yield (0, gitUtils_1.commitAndPush)(GIT_OPTIONS);
             return SUCCESS;
         }
         catch (e) {

@@ -12,7 +12,7 @@ describe('[ RULE ] - isRuleApplicable', () => {
         };
         const trigger = 'commit';
         const branch = 'test';
-        expect(isRuleApplicable_1.default(rule, trigger, branch)).toBe(true);
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch)).toBe(true);
     });
     test('it should match if the trigger matches exactly and the branch is absent', () => {
         const rule = {
@@ -20,7 +20,7 @@ describe('[ RULE ] - isRuleApplicable', () => {
         };
         const trigger = 'commit';
         const branch = 'anyRandomBranch';
-        expect(isRuleApplicable_1.default(rule, trigger, branch)).toBe(true);
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch)).toBe(true);
     });
     test('it should not match if the trigger matches but only part of the branch name matches', () => {
         const rule = {
@@ -29,7 +29,7 @@ describe('[ RULE ] - isRuleApplicable', () => {
         };
         const trigger = 'commit';
         const branch = 'test';
-        expect(isRuleApplicable_1.default(rule, trigger, branch)).toBe(false);
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch)).toBe(false);
     });
     test('it should match if the trigger matches and the branch name is a matching regexp', () => {
         const rule = {
@@ -41,10 +41,10 @@ describe('[ RULE ] - isRuleApplicable', () => {
         const branch2 = 'release69'; // nice
         const branch3 = 'release';
         const branch4 = 'releases';
-        expect(isRuleApplicable_1.default(rule, trigger, branch1)).toBe(true);
-        expect(isRuleApplicable_1.default(rule, trigger, branch2)).toBe(true);
-        expect(isRuleApplicable_1.default(rule, trigger, branch3)).toBe(true);
-        expect(isRuleApplicable_1.default(rule, trigger, branch4)).toBe(false);
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch1)).toBe(true);
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch2)).toBe(true);
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch3)).toBe(true);
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch4)).toBe(false);
     });
     test('it should not match if the trigger does not match', () => {
         const rule = {
@@ -52,6 +52,6 @@ describe('[ RULE ] - isRuleApplicable', () => {
         };
         const trigger = 'manual';
         const branch = 'randomBranch';
-        expect(isRuleApplicable_1.default(rule, trigger, branch)).toBe(false);
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch)).toBe(false);
     });
 });

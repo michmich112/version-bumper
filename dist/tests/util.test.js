@@ -13,29 +13,29 @@ const regExpParser_1 = require("../utils/regExpParser");
 const utils_1 = require("../utils/utils");
 describe("Retrieve 1st level interbracket content", () => {
     test("Simple input case: pre[intra content]post", () => {
-        let testContent = "pre[intra content]post", intraContent = utils_1.getIntrabracketContent(testContent);
+        let testContent = "pre[intra content]post", intraContent = (0, utils_1.getIntrabracketContent)(testContent);
         expect(intraContent).toStrictEqual(["intra content"]);
     });
     test("Diagonal input case: pre[intra1][intra2]post", () => {
-        let testContent = "pre[intra1][intra2]post", intraContent = utils_1.getIntrabracketContent(testContent);
+        let testContent = "pre[intra1][intra2]post", intraContent = (0, utils_1.getIntrabracketContent)(testContent);
         expect(intraContent).toStrictEqual(["intra1", "intra2"]);
     });
     test("Balanced bracket input: pre[intra1[intra2]]pos", () => {
-        let testContent = "pre[intra1[intra2]]post", intraContent = utils_1.getIntrabracketContent(testContent);
+        let testContent = "pre[intra1[intra2]]post", intraContent = (0, utils_1.getIntrabracketContent)(testContent);
         expect(intraContent).toStrictEqual(["intra1[intra2]"]);
     });
     test("No bracket input: prepost", () => {
-        let testContent = "prepost", intraContent = utils_1.getIntrabracketContent(testContent);
+        let testContent = "prepost", intraContent = (0, utils_1.getIntrabracketContent)(testContent);
         expect(intraContent).toBe(null);
     });
     test("Empty bracket input: prepost", () => {
-        let testContent = "pre[]post", intraContent = utils_1.getIntrabracketContent(testContent);
+        let testContent = "pre[]post", intraContent = (0, utils_1.getIntrabracketContent)(testContent);
         expect(intraContent).toBe(null);
     });
 });
 describe("Generate Regular expression from scheme description", () => {
     describe("General semantic cases: major.minor.build", () => {
-        let scheme = 'major.minor.build', genRegExp = regExpParser_1.generateSchemeRegexp(scheme);
+        let scheme = 'major.minor.build', genRegExp = (0, regExpParser_1.generateSchemeRegexp)(scheme);
         console.log(genRegExp);
         test("it should identify the correct item in the string for a simple input", () => {
             let match = "1.2.3".match(genRegExp);
@@ -68,7 +68,7 @@ describe("Generate Regular expression from scheme description", () => {
         });
     });
     describe("General semantic cases w/ optional tag: major.minor[.build]", () => {
-        let scheme = 'major.minor[.build]', genRegExp = regExpParser_1.generateSchemeRegexp(scheme);
+        let scheme = 'major.minor[.build]', genRegExp = (0, regExpParser_1.generateSchemeRegexp)(scheme);
         test("it should identify the correct item in the string for simple input (w/ optional)", () => {
             let match = "1.2.3".match(genRegExp);
             expect(match).not.toBe(null);
@@ -111,7 +111,7 @@ describe("Generate Regular expression from scheme description", () => {
         });
     });
     describe("General semantic cases w/ optional tags: major.minor[.build][.commit]", () => {
-        let scheme = 'major.minor[.build][.commit]', genRegExp = regExpParser_1.generateSchemeRegexp(scheme);
+        let scheme = 'major.minor[.build][.commit]', genRegExp = (0, regExpParser_1.generateSchemeRegexp)(scheme);
         test("it should identify the correct item in the string for simple input (w/ optionals)", () => {
             let match = "1.2.3.4".match(genRegExp);
             expect(match).not.toBe(null);
@@ -165,7 +165,7 @@ describe("Generate Regular expression from scheme description", () => {
         });
     });
     describe("General semantic cases w/ compound optional tags: major.minor[.build[-commit]]", () => {
-        let scheme = 'major.minor[.build[-commit]]', genRegExp = regExpParser_1.generateSchemeRegexp(scheme);
+        let scheme = 'major.minor[.build[-commit]]', genRegExp = (0, regExpParser_1.generateSchemeRegexp)(scheme);
         test("it should identify the correct item in the string for simple input (w/ optionals)", () => {
             let match = "1.2.3-4".match(genRegExp);
             expect(match).not.toBe(null);
@@ -220,22 +220,22 @@ describe("Generate Regular expression from scheme description", () => {
     });
     describe("Case with multiple seperators", () => {
         test("multiple seperators -> 1.2->3", () => {
-            let match = "1.2->3".match(regExpParser_1.generateSchemeRegexp("major.minor->build"));
+            let match = "1.2->3".match((0, regExpParser_1.generateSchemeRegexp)("major.minor->build"));
             expect(match).not.toBe(null);
             expect(match[0]).toBe("1.2->3");
         });
         test("multiple seperators with optional -> 1.2->3", () => {
-            let match = "1.2->3".match(regExpParser_1.generateSchemeRegexp("major.minor[->build]"));
+            let match = "1.2->3".match((0, regExpParser_1.generateSchemeRegexp)("major.minor[->build]"));
             expect(match).not.toBe(null);
             expect(match[0]).toBe("1.2->3");
         });
         test("multiple seperators with optionals -> 1.2->3<-4", () => {
-            let match = "1.2->3<-4".match(regExpParser_1.generateSchemeRegexp("major.minor[->build][<-tag]"));
+            let match = "1.2->3<-4".match((0, regExpParser_1.generateSchemeRegexp)("major.minor[->build][<-tag]"));
             expect(match).not.toBe(null);
             expect(match[0]).toBe("1.2->3<-4");
         });
         test("multiple seperators with compound optionals -> 1.2->3<-4", () => {
-            let match = "1.2->3<-4".match(regExpParser_1.generateSchemeRegexp("major.minor[->build[<-tag]]"));
+            let match = "1.2->3<-4".match((0, regExpParser_1.generateSchemeRegexp)("major.minor[->build[<-tag]]"));
             expect(match).not.toBe(null);
             expect(match[0]).toBe("1.2->3<-4");
         });
@@ -251,17 +251,17 @@ describe("Get Current version from files", () => {
             rules: []
         };
         test("Get without line number", () => __awaiter(void 0, void 0, void 0, function* () {
-            let curVer = yield utils_1.getCurVersion(options);
+            let curVer = yield (0, utils_1.getCurVersion)(options);
             expect(curVer).toBe(VERSION);
         }));
         test("Get with line number", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 3;
-            let curVer = yield utils_1.getCurVersion(options);
+            let curVer = yield (0, utils_1.getCurVersion)(options);
             expect(curVer).toBe(VERSION);
         }));
         test("Get with incorrect line number", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 7;
-            let curVer = yield utils_1.getCurVersion(options);
+            let curVer = yield (0, utils_1.getCurVersion)(options);
             expect(curVer).toBe(VERSION);
         }));
     });
@@ -274,7 +274,7 @@ describe("Get Current version from files", () => {
             rules: []
         };
         options.versionFile.line = 8;
-        let curVer = yield utils_1.getCurVersion(options);
+        let curVer = yield (0, utils_1.getCurVersion)(options);
         expect(curVer).toBe(VERSION);
     }));
     describe("Get Current version from packae.json - custom", () => {
@@ -287,21 +287,21 @@ describe("Get Current version from files", () => {
             rules: []
         };
         test("Get without line number", () => __awaiter(void 0, void 0, void 0, function* () {
-            let curVer = yield utils_1.getCurVersion(options);
+            let curVer = yield (0, utils_1.getCurVersion)(options);
             expect(curVer).toBe(VERSION);
         }));
         test("Get with line number", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 3;
-            let curVer = yield utils_1.getCurVersion(options);
+            let curVer = yield (0, utils_1.getCurVersion)(options);
             expect(curVer).toBe(VERSION);
         }));
         test("Get with incorrect line number", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 7;
-            let curVer = yield utils_1.getCurVersion(options);
+            let curVer = yield (0, utils_1.getCurVersion)(options);
             expect(curVer).toBe(VERSION);
         }));
     });
-    test("Incorrect file path", (done) => __awaiter(void 0, void 0, void 0, function* () {
+    test("Incorrect file path", () => __awaiter(void 0, void 0, void 0, function* () {
         let filePath = "./src/tests/assets/non-existent-file.txt", options = {
             scheme: "custom",
             schemeDefinition: "major-minor>build",
@@ -310,11 +310,11 @@ describe("Get Current version from files", () => {
             rules: []
         };
         try {
-            yield utils_1.getCurVersion(options);
+            yield (0, utils_1.getCurVersion)(options);
             fail("Should return an error");
         }
         catch (e) {
-            done();
+            expect(true).toBe(true);
         }
     }));
     test("No match", () => __awaiter(void 0, void 0, void 0, function* () {
@@ -326,7 +326,7 @@ describe("Get Current version from files", () => {
             rules: []
         };
         try {
-            yield utils_1.getCurVersion(options);
+            yield (0, utils_1.getCurVersion)(options);
             fail("Should return an error");
         }
         catch (e) {
@@ -366,73 +366,73 @@ describe("Get Current version from files", () => {
             ]
         };
         test("Get current version that has Prefix 1", () => __awaiter(void 0, void 0, void 0, function* () {
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("v.1.0.2");
         }));
         test("Get current version that has Prefix 2", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 5;
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("alpha.2.3.5");
         }));
         test("Get correct version that has both prefixes in front", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 6;
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("v.2.3.5");
         }));
         test("Get current version that has Suffix 1", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 7;
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("2.3.5-ALPHA");
         }));
         test("Get current version that has Suffix 2", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 8;
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("6.7.8rc");
         }));
         test("Get current version that has Prefix 1 and Suffix 1", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 9;
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("v.1.0.2-ALPHA");
         }));
         test("Get current version that has Prefix 1 and Suffix 2", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 10;
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("v.4.5.6rc");
         }));
         test("Get current version that has Prefix 2 and Suffix 1", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 11;
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("alpha.3.5.6-ALPHA");
         }));
         test("Get current version that has Prefix 2 and Suffix 2", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 12;
-            const version = yield utils_1.getCurVersion(options);
+            const version = yield (0, utils_1.getCurVersion)(options);
             expect(version).toBe("alpha.7.8.9rc");
         }));
     });
 });
 describe("Get optional version items", () => {
     test("No Optional case.", () => {
-        let optional = utils_1.getOptional("major.minor.build");
+        let optional = (0, utils_1.getOptional)("major.minor.build");
         expect(optional).toStrictEqual({});
     });
     test("Single optional Case", () => {
-        let optional = utils_1.getOptional("major.minor[.build]");
+        let optional = (0, utils_1.getOptional)("major.minor[.build]");
         expect(optional).toStrictEqual({ "build": ".build" });
     });
     test("Double optional case", () => {
-        let optional = utils_1.getOptional("major.minor[.build][.tag]");
+        let optional = (0, utils_1.getOptional)("major.minor[.build][.tag]");
         expect(optional).toStrictEqual({ "build": ".build", "tag": ".tag" });
     });
     test("Double compound case", () => {
-        let optional = utils_1.getOptional("major.minor[.build[.tag]]");
+        let optional = (0, utils_1.getOptional)("major.minor[.build[.tag]]");
         expect(optional).toStrictEqual({ "build": ".build", "tag": ".tag" });
         // Fails -> TODO - Update getOptional to pass
         // optional = getOptional("major.minor[[.build].tag]");
         // expect(optional).toStrictEqual(["build","tag"]);
     });
     test("Multiple compound case", () => {
-        let optional = utils_1.getOptional("major.minor[.build[.tag][.other[.misc]]");
+        let optional = (0, utils_1.getOptional)("major.minor[.build[.tag][.other[.misc]]");
         expect(optional).toStrictEqual({ "build": ".build", "tag": ".tag", "other": ".other", "misc": ".misc" });
     });
 });
@@ -443,14 +443,14 @@ describe("Get Version Map tests", () => {
             versionFile: { path: "" },
             files: [],
             rules: []
-        }, version = "1.2.3", map = utils_1.getVersionMap(options, version);
+        }, version = "1.2.3", map = (0, utils_1.getVersionMap)(options, version);
         expect(map).toStrictEqual({
             major: 1,
             minor: 2,
             build: 3
         });
         version = "1.2";
-        map = utils_1.getVersionMap(options, version);
+        map = (0, utils_1.getVersionMap)(options, version);
         expect(map).toStrictEqual({
             major: 1,
             minor: 2,
@@ -464,7 +464,7 @@ describe("Get Version Map tests", () => {
             versionFile: { path: "" },
             files: [],
             rules: []
-        }, version = "1.2->3", map = utils_1.getVersionMap(options, version);
+        }, version = "1.2->3", map = (0, utils_1.getVersionMap)(options, version);
         expect(map).toStrictEqual({
             version: 1,
             patch: 2,
@@ -478,14 +478,14 @@ describe("Get Version Map tests", () => {
             versionFile: { path: "" },
             files: [],
             rules: []
-        }, version = "1.2->3", map = utils_1.getVersionMap(options, version);
+        }, version = "1.2->3", map = (0, utils_1.getVersionMap)(options, version);
         expect(map).toStrictEqual({
             version: 1,
             patch: 2,
             build: 3
         });
         version = "1.2";
-        map = utils_1.getVersionMap(options, version);
+        map = (0, utils_1.getVersionMap)(options, version);
         expect(map).toStrictEqual({
             version: 1,
             patch: 2,
@@ -499,7 +499,7 @@ describe("Get Version Map tests", () => {
             versionFile: { path: "" },
             files: [],
             rules: []
-        }, version = "1.2.3->4", map = utils_1.getVersionMap(options, version);
+        }, version = "1.2.3->4", map = (0, utils_1.getVersionMap)(options, version);
         expect(map).toStrictEqual({
             major: 1,
             minor: 2,
@@ -507,7 +507,7 @@ describe("Get Version Map tests", () => {
             build: 3
         });
         version = "1.2";
-        map = utils_1.getVersionMap(options, version);
+        map = (0, utils_1.getVersionMap)(options, version);
         expect(map).toStrictEqual({
             major: 1,
             minor: 2,
@@ -515,7 +515,7 @@ describe("Get Version Map tests", () => {
             build: 0
         });
         version = "1";
-        map = utils_1.getVersionMap(options, version);
+        map = (0, utils_1.getVersionMap)(options, version);
         expect(map).toStrictEqual({
             major: 1,
             minor: 0,
@@ -537,7 +537,7 @@ describe("Version map to String tests", () => {
         build: 0
     };
     test("No optional", () => {
-        let version = utils_1.versionMapToString(options, map);
+        let version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.1.0");
     });
     test("Single Optional zero", () => {
@@ -547,7 +547,7 @@ describe("Version map to String tests", () => {
             minor: 1,
             build: 0
         };
-        let version = utils_1.versionMapToString(options, map);
+        let version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.1");
     });
     test("Single Optional Value", () => {
@@ -557,7 +557,7 @@ describe("Version map to String tests", () => {
             minor: 1,
             build: 34
         };
-        let version = utils_1.versionMapToString(options, map);
+        let version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.1.34");
     });
     test("Multiple Optional Value", () => {
@@ -567,10 +567,10 @@ describe("Version map to String tests", () => {
             minor: 1,
             build: 34
         };
-        let version = utils_1.versionMapToString(options, map);
+        let version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.1.34");
         options.schemeDefinition = "major[.minor[.build]]";
-        version = utils_1.versionMapToString(options, map);
+        version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.1.34");
     });
     test("Multiple Optional Single Zero", () => {
@@ -581,10 +581,10 @@ describe("Version map to String tests", () => {
             minor: 0,
             build: 34
         };
-        let version = utils_1.versionMapToString(options, map);
+        let version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.0.34");
         options.schemeDefinition = "major[.minor[.build]]";
-        version = utils_1.versionMapToString(options, map);
+        version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.0.34");
         // build = 0
         options.schemeDefinition = "major[.minor][.build]";
@@ -593,10 +593,10 @@ describe("Version map to String tests", () => {
             minor: 1,
             build: 0
         };
-        version = utils_1.versionMapToString(options, map);
+        version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.1");
         options.schemeDefinition = "major[.minor[.build]]";
-        version = utils_1.versionMapToString(options, map);
+        version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2.1");
     });
     test("Multiple Optional Multiple Zero", () => {
@@ -606,10 +606,10 @@ describe("Version map to String tests", () => {
             minor: 0,
             build: 0
         };
-        let version = utils_1.versionMapToString(options, map);
+        let version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2");
         options.schemeDefinition = "major[.minor[.build]]";
-        version = utils_1.versionMapToString(options, map);
+        version = (0, utils_1.versionMapToString)(options, map);
         expect(version).toBe("2");
     });
 });
@@ -664,72 +664,72 @@ describe("Bump Version tests", () => {
         test("Commit Trigger random branch Tests", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1; // should fetch version number 1.2.3
             // commit on random branch should result in just a bump from the build tag
-            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'random');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'commit', 'random');
             expect(newVersion).toBe('1.2.4');
         }));
         test("Commit Trigger random branch Tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 2; // should fetch version number 1.2.3
             // commit on random branch should result in just a bump from the build tag
             console.log(options);
-            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'random');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'commit', 'random');
             expect(newVersion).toBe('1.2.1');
         }));
         test("Commit Trigger release branch Tests", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1; // should fetch version number 1.2.3
             // commit on release branch should bump major, reset minor and build, bump build
-            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'release');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'commit', 'release');
             expect(newVersion).toBe('2.0.1');
         }));
         test("Commit Trigger release branch Tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 2; // should fetch version number 1.2.3
             // commit on release branch should bump major, reset minor and build, bump build
-            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'release');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'commit', 'release');
             expect(newVersion).toBe('2.0.1');
         }));
         test("Commit Trigger master branch tests", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1; // should fetch version number 1.2.3
             // commit on master branch should bump minor, reset and bump build
-            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'master');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'commit', 'master');
             expect(newVersion).toBe('1.3.1');
         }));
         test("Commit Trigger master branch tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 2; // should fetch version number 1.2.3
             // commit on master branch should bump minor, reset and bump build
-            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'master');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'commit', 'master');
             expect(newVersion).toBe('1.3.1');
         }));
         test("Manual Trigger random branch Tests", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1; // should fetch version number 1.2.3
             // manual trigger on random branch should bump build tag
-            let newVersion = yield utils_1.bumpVersion(options, 'manual', 'random');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'manual', 'random');
             expect(newVersion).toBe('1.2.4');
         }));
         test("Manual Trigger random branch Tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1; // should fetch version number 1.2.3
             // manual trigger on random branch should bump build tag
-            let newVersion = yield utils_1.bumpVersion(options, 'manual', 'random');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'manual', 'random');
             expect(newVersion).toBe('1.2.4');
         }));
         test("Manual Trigger master branch tests", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1; // should fetch version number 1.2.3
             // manual trigger on master branch should bump major, reset minor and build, bump build
-            let newVersion = yield utils_1.bumpVersion(options, 'manual', 'master');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'manual', 'master');
             expect(newVersion).toBe('2.0.1');
         }));
         test("Manual Trigger master branch tests no build", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 2; // should fetch version number 1.2.3
             // manual trigger on master branch should bump major, reset minor and build, bump build
-            let newVersion = yield utils_1.bumpVersion(options, 'manual', 'master');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'manual', 'master');
             expect(newVersion).toBe('2.0.1');
         }));
         test("Commit trigger with suffix", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1;
-            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'release-candidate');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'commit', 'release-candidate');
             expect(newVersion).toBe('2.0.1-rc');
         }));
         test("Commit trigger with prefix", () => __awaiter(void 0, void 0, void 0, function* () {
             options.versionFile.line = 1;
-            let newVersion = yield utils_1.bumpVersion(options, 'commit', 'version-tag');
+            let newVersion = yield (0, utils_1.bumpVersion)(options, 'commit', 'version-tag');
             expect(newVersion).toBe("v.1.2.4");
         }));
         // describe("Pull-request trigger tests", () => {});

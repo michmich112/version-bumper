@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -49,7 +49,7 @@ const isRuleApplicable_1 = __importDefault(require("../rules/isRuleApplicable"))
  */
 function verifyTrigger() {
     try {
-        options_1.getTrigger();
+        (0, options_1.getTrigger)();
         return true;
     }
     catch (e) {
@@ -85,8 +85,8 @@ exports.getIntrabracketContent = getIntrabracketContent;
  * @param options
  */
 function getSchemeRegex(options) {
-    options_1.normalizeOptions(options);
-    return regExpParser_1.generateSchemeRegexp(options.schemeDefinition);
+    (0, options_1.normalizeOptions)(options);
+    return (0, regExpParser_1.generateSchemeRegexp)(options.schemeDefinition);
 }
 exports.getSchemeRegex = getSchemeRegex;
 /**
@@ -182,7 +182,7 @@ exports.getCurVersion = getCurVersion;
  * @returns {BumpRule[]}
  */
 function getRules(options, trigger, branch) {
-    return options.rules.filter((rule) => isRuleApplicable_1.default(rule, trigger, branch));
+    return options.rules.filter((rule) => (0, isRuleApplicable_1.default)(rule, trigger, branch));
 }
 exports.getRules = getRules;
 /**
@@ -241,7 +241,7 @@ exports.getTag = getTag;
  * @param version
  */
 function getVersionMap(options, version) {
-    options_1.normalizeOptions(options);
+    (0, options_1.normalizeOptions)(options);
     let versionValues = version.split(/[.,;:\-_><]+/g).filter((tag) => tag !== ""), // get version numbers for all tags
     tags = options.schemeDefinition.split(/[.,;:\-_><\]\[]+/g).filter((tag) => tag !== ""), map = tags.reduce((pre, cur) => {
         return Object.assign(Object.assign({}, pre), { [cur]: 0 });
@@ -310,7 +310,7 @@ exports.getSuffixes = getSuffixes;
  * @param map
  */
 function versionMapToString(options, map) {
-    options_1.normalizeOptions(options);
+    (0, options_1.normalizeOptions)(options);
     let optional = getOptional(options.schemeDefinition), opKeys = Object.keys(optional), orderedItems = options.schemeDefinition.split(/[.,;:\-_><\]\[]+/g).filter((tag) => tag !== ""), version = options.schemeDefinition.replace(/[\[\]]+/g, ''), //remove the optional brackets
     // flags if the tags can be omitted if optional (goes from the back to the front. If the backmost tag is not 0 then it cant be omitted and all that follow must also be put
     // e.g. if the scheme is major[.minor][.build],

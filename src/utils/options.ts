@@ -14,7 +14,7 @@ import * as fs from "fs";
 export function normalizeOptions(options: BumperOptionsFile) {
   try {
     options.schemeDefinition = getSchemeDefinition(options);
-  } catch (e) {
+  } catch (e: any) {
     console.error(e.message);
     throw e; // rethrow to stop process
   }
@@ -106,7 +106,7 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
   }
   try {
     bumperOptions.schemeDefinition = getSchemeDefinition(bumperOptions);
-  } catch (e) {
+  } catch (e: any) {
     err(e);
   }
 
@@ -191,7 +191,7 @@ export function normalizeFiles(files: (VersionFile | string)[]): VersionFile[] {
       filez[file] = undefined;
   }
   return Object.keys(filez).reduce((pre: VersionFile[], cur: string) => [...pre,
-    filez[cur] ? { path: cur, line: filez[cur] } : { path: cur }], []);
+  filez[cur] ? { path: cur, line: filez[cur] } : { path: cur }], []);
 }
 
 /**

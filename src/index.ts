@@ -46,7 +46,7 @@ async function main() {
     await commitAndPush(GIT_OPTIONS);
 
     return SUCCESS;
-  } catch (e) {
+  } catch (e: any) {
     core.error(e.message);
     return FAILURE;
   }
@@ -59,7 +59,7 @@ async function bump(state: BumperState) {
   for (const file of files) {
     try {
       wbArray.push(await setNewVersion(file, curVersion, newVersion));
-    } catch (e) {
+    } catch (e: any) {
       core.error(`Error setting new version for file with path ${file.path}`);
       core.error(e.message);
     }
@@ -67,7 +67,7 @@ async function bump(state: BumperState) {
   for (const wb of wbArray) {
     try {
       await wb();
-    } catch (e) {
+    } catch (e: any) {
       core.error(`Write back error`);
       core.error(e.message);
     }

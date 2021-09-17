@@ -1,6 +1,6 @@
 {
   "name": "version-bumper",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "GitHub action to automatically bump versions in any project and define your versioning schemes and  rules to control your versioning pipeline.",
   "main": "src/lib/index.js",
   "scripts": {
@@ -13,15 +13,15 @@
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/exec": "^1.1.0",
-    "@actions/github": "^2.1.1",
-    "@octokit/webhooks": "^7.24.3",
+    "@actions/github": "^5.0.0",
+    "@octokit/webhooks": "^9.15.0",
     "@types/jest": "^25.1.4",
     "gh-action-stats": "0.0.3"
   },
   "devDependencies": {
     "@types/node": "^13.13.52",
-    "jest": "^25.2.4",
-    "typescript": "^3.9.10"
+    "jest": "^27.2.0",
+    "typescript": "^4.4.3"
   },
   "jest": {
     "verbose": true,
