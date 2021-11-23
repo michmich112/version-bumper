@@ -16,7 +16,7 @@
     "@actions/github": "^5.0.0",
     "@octokit/webhooks": "^9.15.0",
     "@types/jest": "^25.1.4",
-    "gh-action-stats": "0.0.3"
+    "gh-action-stats": "0.0.5"
   },
   "devDependencies": {
     "@types/node": "^13.13.52",

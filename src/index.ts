@@ -104,9 +104,5 @@ async function setNewVersion(file: VersionFile, curVersion: string, newVersion: 
   };
 }
 
-main()
-  .then(status => status)
-  .catch(e => {
-    core.error(e);
-    return FAILURE;
-  });
+collectStats(main);
+
