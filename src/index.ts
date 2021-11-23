@@ -15,7 +15,6 @@ const SUCCESS = 0,
   FAILURE = 1;
 
 async function main() {
-  collectStats();
 
   if (!core.getInput('github-token')) {
     core.error("Github token required");

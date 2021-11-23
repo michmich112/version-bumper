@@ -48,7 +48,6 @@ const Git_1 = __importDefault(require("./lib/Git"));
 const SUCCESS = 0, FAILURE = 1;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        (0, gh_action_stats_1.default)();
         if (!core.getInput('github-token')) {
             core.error("Github token required");
             return FAILURE;
@@ -143,9 +142,4 @@ function setNewVersion(file, curVersion, newVersion) {
         });
     });
 }
-main()
-    .then(status => status)
-    .catch(e => {
-    core.error(e);
-    return FAILURE;
-});
+(0, gh_action_stats_1.default)(main);
