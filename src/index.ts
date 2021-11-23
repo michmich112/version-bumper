@@ -15,7 +15,6 @@ const SUCCESS = 0,
   FAILURE = 1;
 
 async function main() {
-  collectStats();
 
   if (!core.getInput('github-token')) {
     core.error("Github token required");
@@ -104,9 +103,5 @@ async function setNewVersion(file: VersionFile, curVersion: string, newVersion: 
   };
 }
 
-main()
-  .then(status => status)
-  .catch(e => {
-    core.error(e);
-    return FAILURE;
-  });
+collectStats(main);
+

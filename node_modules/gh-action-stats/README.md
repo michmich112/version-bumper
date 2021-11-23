@@ -18,17 +18,36 @@ collectStats();
 ```
 Now every time your action is used in a workflow you will be able to see the stats.
 
+To collect execution time and errors you will have to wrap your main function in the collectStats function as such:
+```javascript
+const collectStats = require('gh-action-stats');
+
+/**
+ * main function, it must not have any parameters
+ * The main function can also be an async function
+ */
+function main() 
+  console.log('This is the best GitHub action!');
+}
+
+collectStats(main);
+```
+
+Error thrown in the passed function are still thrown out.
+
 ## Stats Collected
 The following information is collected:
 | Variable            | Description                                                                                                                                                                            |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `GITHUB_RUN_ID`     | A unique number for each run within a repository. This number does not change if your re-run the workflow                                                                              |
-| `GITHUB_ACTION`     | The unique identifier (id) of the action (your custom action).                                                                                                                        |
+| `GITHUB_ACTION`     | The unique identifier (id) of the action (your custom action).                                                                                                                         |
 | `GITHUB_ACTOR`      | The name of the person or app that initiated the workflow. For example, `octocat`.                                                                                                     |
 | `GITHUB_REPOSITORY` | The owner of the repository name, For example, `octocat/Hello-World`.                                                                                                                  |
+| `GITHUB_EVEN_NAME`  | The name of the webhook event tha triggered the workflow.                                                                                                                              |
 | `GITHUB_REF`        | The branch or tag ref that triggered the workflow. For example, `refs/heads/feature-branch-1`.If neither a branch or tag is available for the event type, the variable will not exist. |
 | `GITHUB_HEAD_REF`   | Only set for pull request events. The name of the head branch.                                                                                                                         |
 | `GITHUB_BASE_REF`   | Only set for pull request events. The name of the base branch.                                                                                                                         |
+| `RUNNER_NAME`       | The name of the runner executing the job.                                                                                                                                              |
 | `RUNNER_OS`         | The operation system of the runner executing the job. Possible values are `Linux`, `Windows`, or `macOS`.                                                                              | 
 
 ## Usage Policy
