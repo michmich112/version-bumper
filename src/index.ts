@@ -6,7 +6,7 @@ import { getBumperOptions, getBumperState } from "./utils/options";
 import BumperOptionsFile, { VersionFile } from "./lib/types/OptionsFile.types";
 import BumperState from "./lib/types/BumperState.type";
 import * as readline from "readline";
-import { commitAndPush } from "./utils/gitUtils";
+import { commitAndPush, configureGit } from "./utils/gitUtils";
 import { CommitOptions } from "./lib/types/Git.types";
 import Git from './lib/Git';
 
@@ -31,9 +31,6 @@ async function main() {
       return SUCCESS;
     }
 
-    await (await new Git().fetchBranch(state.branch)).checkoutBranch(state.branch);
-    await bump(state);
-
     const GIT_OPTIONS: CommitOptions = {
       userName: 'version-bumper',
       userEmail: 'bumper@boringday.co',
@@ -42,6 +39,11 @@ async function main() {
       token: core.getInput('github-token'),
       branch: state.branch
     };
+
+    const git = await configureGit(GIT_OPTIONS);
+    await (await git.fetchBranch(state.branch)).checkoutBranch(state.branch);
+    await bump(state);
+
 
     await commitAndPush(GIT_OPTIONS);
 
