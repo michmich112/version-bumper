@@ -74,7 +74,7 @@ function main() {
         }
         catch (e) {
             core.error(e.message);
-            return FAILURE;
+            throw e;
         }
     });
 }

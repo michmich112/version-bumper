@@ -50,7 +50,7 @@ async function main() {
     return SUCCESS;
   } catch (e: any) {
     core.error(e.message);
-    return FAILURE;
+    throw e;
   }
 }
 
