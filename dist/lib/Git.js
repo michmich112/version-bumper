@@ -61,6 +61,17 @@ class Git {
         });
     }
     /**
+     * Fetch branch from remote
+     * @param {string} branch: Branch name to fetch
+     * @returns {Promise<Git>}
+     */
+    fetchRemoteBranch(branch) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield (0, exec_1.exec)('git', ['fetch', this.remoteName, branch], this.execOptions);
+            return this;
+        });
+    }
+    /**
      * Stage all new modifications
      * @returns {Promise<Git>}
      */

@@ -1,0 +1,34 @@
+name: Release Action
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - dist/**
+      - src/**
+      - node_modules/**
+      - package-lock.json
+      - package.json
+  workflow_dispatch:
+
+jobs: 
+  bump_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with: 
+          node-version: '12'
+      - name: Bump & Tag
+        uses: michmich112/version-bumper@master
+        with:
+          scheme: org_semantic
+          version-file: ./package.json
+          files: "[]"
+          rules: '[{"trigger": "commit", "bump": "build", "branch": "master", "tag": true},{"trigger": "manual", "bump": "minor", "reset": "build", "branch": "master", "tag": true} ]'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+

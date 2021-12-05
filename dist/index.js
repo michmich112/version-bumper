@@ -44,7 +44,6 @@ const gh_action_stats_1 = __importDefault(require("gh-action-stats"));
 const options_1 = require("./utils/options");
 const readline = __importStar(require("readline"));
 const gitUtils_1 = require("./utils/gitUtils");
-const Git_1 = __importDefault(require("./lib/Git"));
 const SUCCESS = 0, FAILURE = 1;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -59,8 +58,6 @@ function main() {
                 core.info('No bump rules applicable');
                 return SUCCESS;
             }
-            yield new Git_1.default().checkoutBranch(state.branch);
-            yield bump(state);
             const GIT_OPTIONS = {
                 userName: 'version-bumper',
                 userEmail: 'bumper@boringday.co',
@@ -69,12 +66,16 @@ function main() {
                 token: core.getInput('github-token'),
                 branch: state.branch
             };
+            const git = yield (0, gitUtils_1.configureGit)(GIT_OPTIONS);
+            yield (yield git.fetchRemoteBranch(state.branch)).checkoutBranch(state.branch);
+            yield bump(state);
             yield (0, gitUtils_1.commitAndPush)(GIT_OPTIONS);
             return SUCCESS;
         }
         catch (e) {
             core.error(e.message);
-            return FAILURE;
+            core.setFailed(`Error: ${e.message}, Validate options file or create an issue if this persists`);
+            throw e;
         }
     });
 }

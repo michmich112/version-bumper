@@ -50,7 +50,7 @@ function configureGit(gitOptions, remoteName = 'github', gitInterface) {
             listeners: {
                 stdline: core.debug,
                 stderr: (data) => {
-                    core.warning(data.toString());
+                    core.debug(data.toString());
                 },
                 debug: core.debug,
             },
@@ -78,7 +78,7 @@ function commit(commitOptions, gitInterface) {
             listeners: {
                 stdline: core.debug,
                 stderr: (data) => {
-                    core.error(data.toString());
+                    core.debug(data.toString());
                 },
                 debug: core.debug,
             },
@@ -102,8 +102,7 @@ exports.commit = commit;
  */
 function commitAndPush(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        let git = yield configureGit(options);
-        yield commit(options, git);
+        const git = yield commit(options);
         yield git.pushBranch(options.branch);
     });
 }
