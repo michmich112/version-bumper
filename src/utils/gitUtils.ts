@@ -74,8 +74,6 @@ export async function commit(commitOptions: CommitOptions, gitInterface?: Git): 
  * @returns {Promise<void>}
  */
 export async function commitAndPush(options: CommitOptions): Promise<void> {
-  let git = await configureGit(options);
-  //const git = await commit(options);
-  await commit(options, git);
+  const git = await commit(options);
   await git.pushBranch(options.branch);
 }

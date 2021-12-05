@@ -102,9 +102,7 @@ exports.commit = commit;
  */
 function commitAndPush(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        let git = yield configureGit(options);
-        //const git = await commit(options);
-        yield commit(options, git);
+        const git = yield commit(options);
         yield git.pushBranch(options.branch);
     });
 }
