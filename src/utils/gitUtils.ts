@@ -10,8 +10,8 @@ import Git from '../lib/Git';
  * @returns {Promise<Git>}
  */
 export async function configureGit(gitOptions: CommitOptions,
-                                   remoteName: string = 'github',
-                                   gitInterface?: Git): Promise<Git> {
+  remoteName: string = 'github',
+  gitInterface?: Git): Promise<Git> {
   const { GITHUB_ACTOR, GITHUB_REPOSITORY } = process.env;
   const ORIGIN = `https://${GITHUB_ACTOR}:${gitOptions.token}@github.com/${GITHUB_REPOSITORY}.git`;
   const EXEC_OPTIONS = {
@@ -74,7 +74,7 @@ export async function commit(commitOptions: CommitOptions, gitInterface?: Git): 
  * @returns {Promise<void>}
  */
 export async function commitAndPush(options: CommitOptions): Promise<void> {
-  let git = await configureGit(options);
-  await commit(options, git);
+  //  let git = await configureGit(options);
+  const git = await commit(options);
   await git.pushBranch(options.branch);
 }
