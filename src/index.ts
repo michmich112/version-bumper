@@ -50,6 +50,7 @@ async function main() {
     return SUCCESS;
   } catch (e: any) {
     core.error(e.message);
+    core.setFailed(`Error: ${e.message}, Validate options file or create an issue if this persists`);
     throw e;
   }
 }

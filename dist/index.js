@@ -74,6 +74,7 @@ function main() {
         }
         catch (e) {
             core.error(e.message);
+            core.setFailed(`Error: ${e.message}, Validate options file or create an issue if this persists`);
             throw e;
         }
     });
