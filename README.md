@@ -268,6 +268,8 @@ interface BumpRule {
 Thank you to 
 - [jamieleecho](https://github.com/jamieleecho)
 - [migueltarga](https://github.com/migueltarga)
+- [MarkIannucci](https://github.com/MarkIannucci)
+
 for their help and contributions to the project!
 
 # Notes
