@@ -59,7 +59,7 @@ function main() {
                 core.info('No bump rules applicable');
                 return SUCCESS;
             }
-            yield new Git_1.default().checkoutBranch(state.branch);
+            yield (yield new Git_1.default().fetchBranch(state.branch)).checkoutBranch(state.branch);
             yield bump(state);
             const GIT_OPTIONS = {
                 userName: 'version-bumper',

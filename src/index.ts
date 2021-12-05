@@ -30,7 +30,8 @@ async function main() {
       core.info('No bump rules applicable');
       return SUCCESS;
     }
-    await new Git().checkoutBranch(state.branch);
+
+    await (await new Git().fetchBranch(state.branch)).checkoutBranch(state.branch);
     await bump(state);
 
     const GIT_OPTIONS: CommitOptions = {
