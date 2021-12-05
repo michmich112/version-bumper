@@ -65,9 +65,9 @@ class Git {
      * @param {string} branch: Branch name to fetch
      * @returns {Promise<Git>}
      */
-    fetchBranch(branch) {
+    fetchRemoteBranch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield (0, exec_1.exec)('git', ['fetch', branch], this.execOptions);
+            yield (0, exec_1.exec)('git', ['fetch', this.remoteName, branch], this.execOptions);
             return this;
         });
     }

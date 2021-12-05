@@ -56,8 +56,8 @@ export default class Git {
    * @param {string} branch: Branch name to fetch
    * @returns {Promise<Git>}
    */
-  async fetchBranch(branch: string): Promise<Git> {
-    await exec('git', ['fetch', branch], this.execOptions);
+  async fetchRemoteBranch(branch: string): Promise<Git> {
+    await exec('git', ['fetch', this.remoteName, branch], this.execOptions);
     return this;
   }
 

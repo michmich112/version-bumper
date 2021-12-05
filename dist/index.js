@@ -67,7 +67,7 @@ function main() {
                 branch: state.branch
             };
             const git = yield (0, gitUtils_1.configureGit)(GIT_OPTIONS);
-            yield (yield git.fetchBranch(state.branch)).checkoutBranch(state.branch);
+            yield (yield git.fetchRemoteBranch(state.branch)).checkoutBranch(state.branch);
             yield bump(state);
             yield (0, gitUtils_1.commitAndPush)(GIT_OPTIONS);
             return SUCCESS;

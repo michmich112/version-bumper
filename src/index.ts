@@ -41,7 +41,7 @@ async function main() {
     };
 
     const git = await configureGit(GIT_OPTIONS);
-    await (await git.fetchBranch(state.branch)).checkoutBranch(state.branch);
+    await (await git.fetchRemoteBranch(state.branch)).checkoutBranch(state.branch);
     await bump(state);
 
 
