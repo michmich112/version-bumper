@@ -73,9 +73,10 @@ function main() {
             return SUCCESS;
         }
         catch (e) {
+            const message = e.message + "/n" + e.stack;
             core.error(e.message);
             core.setFailed(`Error: ${e.message}, Validate options file or create an issue if this persists`);
-            throw e;
+            throw new Error(message);
         }
     });
 }
