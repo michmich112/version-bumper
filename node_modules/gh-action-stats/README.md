@@ -33,7 +33,11 @@ function main()
 collectStats(main);
 ```
 
-Error thrown in the passed function are still thrown out.
+Errors thrown in the passed function are still thrown out.
+
+## Local
+Stats will only be collected and saved if the `CI` environment variable is set to `true` (as is the case in CI environments including Github actions).
+As such local runs where the `CI` environment variable is not set will not collect any data.
 
 ## Stats Collected
 The following information is collected:
@@ -57,6 +61,6 @@ Please make sure you state that you are using this package in your README as to 
 This packages is made to work with node 12 or above.
 
 ## Todo
-- [ ] Runtime stats for debugging possible problems in runs.
+- [x] Runtime stats for debugging possible problems in runs.
 - [ ] Test on self hosted runners
 
