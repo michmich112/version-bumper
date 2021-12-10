@@ -1,4 +1,8 @@
 # Version Bumper
+![total runs](https://actions.boringday.co/api/badge?owner=michmich112&repo=version-bumper&metric=runs)
+![runs per month](https://actions.boringday.co/api/badge?owner=michmich112&repo=version-bumper&metric=runs-per-month)
+![repos](https://actions.boringday.co/api/badge?owner=michmich112&repo=version-bumper&metric=repos)
+---
 Github action that automatically bumps versions in selected files based on versioning scheme and rules.
 
 Please create an issue if you have found a bug or wish for additional functionality.
