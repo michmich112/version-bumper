@@ -85,6 +85,12 @@ export interface BumpRule {
   branch?: string,
 
   /**
+   * Optional destinatoin branch for which the rule should take effect
+   * This is primarily used for pull_request triggers. On commit triggers destBranch is automtically equal to the branch parameter
+   */
+  destBranch?: string,
+
+  /**
    * What items in the version number need to be bumped
    */
   bump?: string | string[],

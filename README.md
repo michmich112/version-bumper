@@ -36,7 +36,7 @@ Without options file
 ```yaml
 name: Manage versions
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   bump:
@@ -66,8 +66,8 @@ jobs:
               "suffix": "-beta",
               "bump":"build"
             },{
-              "trigger": "commit",
-              "branch": "main",
+              "trigger": "pull-request",
+              "destBranch": "main",
               "suffix": "-rc",
               "bump": "minor",
               "tag": true
@@ -214,6 +214,12 @@ interface BumpRule {
     branch?: string,
 
     /**
+     * Optional destinatoin branch for which the rule should take effect
+     * This is primarily used for pull_request triggers. On commit triggers destBranch is automtically equal to the branch parameter
+     */
+    destBranch?: string,
+
+    /**
      * What items in the version number need to be bumped
      * precisely matches the tag items
      */
@@ -242,7 +248,7 @@ interface BumpRule {
     /**
      * Action that triggers the bump to occur
      *    - commit: new commit on branch (includes the creation of a new branch),
-     *    - pull request: new pull request on branch,
+     *    - pull request: new pull request on branch (only when pr is Opened),
      *    - manual: trigger the workflow manually using workflow_dispatch
      * Note: your workflow must accept the 'push' event for the commit trigger and 'pull_request' event for pull-request trigger
      * Note: your workflow must accept the 'workflow_dispatch' event to use the manual trigger
@@ -313,6 +319,12 @@ interface BumpRule {
      * Optional branch on which the rule should take effect
      */
     branch?: string,
+
+    /**
+     * Optional destinatoin branch for which the rule should take effect
+     * This is primarily used for pull_request triggers. On commit triggers destBranch is automtically equal to the branch parameter
+     */
+    destBranch?: stirng,
 
     /**
      * What items in the version number need to be bumped

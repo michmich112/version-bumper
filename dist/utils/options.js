@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getSkipOption = exports.getFiles = exports.getBumperOptions = exports.getBranchFromTrigger = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
+exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getSkipOption = exports.getFiles = exports.getBumperOptions = exports.getDestBranchFromTrigger = exports.getBranchFromTrigger = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
 const definedSchemes = __importStar(require("../schemes.json"));
 const utils_1 = require("./utils");
 const core = __importStar(require("@actions/core"));
@@ -90,12 +90,35 @@ function getBranchFromTrigger(trigger) {
             branch = ((_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.substring('refs/heads/'.length)) || '';
             break;
     }
+    core.info(`process.env.GITHUB_BASE_REF ${process.env.GITHUB_BASE_REF}`);
     core.info(`process.env.GITHUB_HEAD_REF: ${process.env.GITHUB_HEAD_REF}`);
     core.info(`process.env.GITHUB_REF: ${process.env.GITHUB_REF}`);
     core.info(`Current Branch identified: ${branch}`);
     return branch;
 }
 exports.getBranchFromTrigger = getBranchFromTrigger;
+/**
+ * Get the destination branch for an action,
+ * this is principally used for pull requests to match head and base refs
+ * @param trigger {RuleTrigger}
+ * @returns {string}
+ */
+function getDestBranchFromTrigger(trigger) {
+    var _a;
+    let branch;
+    switch (trigger) {
+        case 'pull-request':
+            branch = process.env.GITHUB_BASE_REF || '';
+            break;
+        case 'commit':
+        case 'manual':
+        default:
+            branch = ((_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.substring('refs/heads/'.length)) || '';
+            break;
+    }
+    return branch;
+}
+exports.getDestBranchFromTrigger = getDestBranchFromTrigger;
 /**
  * Get all bumper options
  */
@@ -284,7 +307,7 @@ exports.getTrigger = getTrigger;
  */
 function getBumperState(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), skip = getSkipOption(options), schemeRegExp = (0, utils_1.getSchemeRegex)(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield (0, utils_1.getCurVersion)(options), tag = (0, utils_1.getTag)(options, trigger, branch), newVersion = yield (0, utils_1.bumpVersion)(options, trigger, branch), files = getFiles(options);
+        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), destBranch = getDestBranchFromTrigger(trigger), skip = getSkipOption(options), schemeRegExp = (0, utils_1.getSchemeRegex)(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield (0, utils_1.getCurVersion)(options), tag = (0, utils_1.getTag)(options, trigger, branch, destBranch), newVersion = yield (0, utils_1.bumpVersion)(options, trigger, branch, destBranch), files = getFiles(options);
         const state = {
             curVersion,
             newVersion,
@@ -294,6 +317,7 @@ function getBumperState(options) {
             tag,
             trigger,
             branch,
+            destBranch,
             files
         };
         core.info(`State -> ${JSON.stringify(state)}`);

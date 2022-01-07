@@ -179,10 +179,11 @@ exports.getCurVersion = getCurVersion;
  * @param {BumperOptionsFile} options
  * @param {RuleTrigger} trigger
  * @param {string} branch
+ * @param {string} destBranch destination branch (different if the trigger is a pull request)
  * @returns {BumpRule[]}
  */
-function getRules(options, trigger, branch) {
-    return options.rules.filter((rule) => (0, isRuleApplicable_1.default)(rule, trigger, branch));
+function getRules(options, trigger, branch, destBranch) {
+    return options.rules.filter((rule) => (0, isRuleApplicable_1.default)(rule, trigger, branch, destBranch));
 }
 exports.getRules = getRules;
 /**
@@ -228,10 +229,11 @@ function getApplicableSuffix(rules) {
  * @param {BumperOptionsFile} options
  * @param {RuleTrigger} trigger
  * @param {string} branch
+ * @param {string} destBranch
  * @returns {boolean}
  */
-function getTag(options, trigger, branch) {
-    const rules = getRules(options, trigger, branch);
+function getTag(options, trigger, branch, destBranch) {
+    const rules = getRules(options, trigger, branch, destBranch);
     return rules.reduce((pre, cur) => pre || (cur.tag || false), false);
 }
 exports.getTag = getTag;
@@ -343,10 +345,10 @@ exports.versionMapToString = versionMapToString;
  * @param trigger
  * @param branch
  */
-function bumpVersion(options, trigger, branch) {
+function bumpVersion(options, trigger, branch, destBranch) {
     return __awaiter(this, void 0, void 0, function* () {
         const curVersion = yield getCurVersion(options);
-        const rules = getRules(options, trigger, branch);
+        const rules = getRules(options, trigger, branch, destBranch);
         const resetItems = getResetItems(rules);
         const bumpItems = getBumpItems(rules);
         const prefix = getApplicablePrefix(rules);
