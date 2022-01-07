@@ -48,6 +48,8 @@ jobs:
         uses: michmich112/version-bumper@master
         with:
           scheme: semantic
+          username: DoomGuy
+          email: guy@doom.id
           version-file: "./package.json"
           files: >
             [
@@ -80,6 +82,8 @@ jobs:
 | Parameter       | Required  |
 |-----------------|-----------|
 | `options-file`  | false     |
+| `username`      | false     |
+| `email`         | false     |
 | `github-token`  | true      |
 | `scheme`        | true      |
 | `custom-scheme` | false     |
@@ -95,6 +99,23 @@ File path to the options file containing run options. The options file must be J
 Example usage:
 ```yaml
 options-file: './.github/version-bumper-options.json'
+```
+
+### `username` (Optional)
+Username of the account to perform the version bump commit. Overrides the default of `VersionBumper`.
+
+Example usage:
+```yaml
+usernmae: VersionBumper
+```
+
+### `email` (Optional)
+Email of the account to perform the version bump commit (if this email is linked to a github account, 
+github will be able to identify the user an attribute the commit to them). Overrides the default.
+
+Example usage:
+```yaml
+email: dev@boringday.co
 ```
 
 ### `github-token` (Required)

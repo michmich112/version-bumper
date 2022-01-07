@@ -1,5 +1,7 @@
 {
   "scheme": "custom",
+  "username": "DoomGuy",
+  "email": "guy@doom.id",
   "schemeDefinition": "major.minor[.build][->patch]",
   "versionFile": "./package.json",
   "files": ["./src/example/file1", {
