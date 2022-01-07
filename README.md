@@ -248,7 +248,7 @@ interface BumpRule {
     /**
      * Action that triggers the bump to occur
      *    - commit: new commit on branch (includes the creation of a new branch),
-     *    - pull request: new pull request on branch,
+     *    - pull request: new pull request on branch (only when pr is Opened),
      *    - manual: trigger the workflow manually using workflow_dispatch
      * Note: your workflow must accept the 'push' event for the commit trigger and 'pull_request' event for pull-request trigger
      * Note: your workflow must accept the 'workflow_dispatch' event to use the manual trigger
