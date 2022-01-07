@@ -214,6 +214,12 @@ interface BumpRule {
     branch?: string,
 
     /**
+     * Optional destinatoin branch for which the rule should take effect
+     * This is primarily used for pull_request triggers. On commit triggers destBranch is automtically equal to the branch parameter
+     */
+    destBranch?: string,
+
+    /**
      * What items in the version number need to be bumped
      * precisely matches the tag items
      */
@@ -313,6 +319,12 @@ interface BumpRule {
      * Optional branch on which the rule should take effect
      */
     branch?: string,
+
+    /**
+     * Optional destinatoin branch for which the rule should take effect
+     * This is primarily used for pull_request triggers. On commit triggers destBranch is automtically equal to the branch parameter
+     */
+    destBranch?: stirng,
 
     /**
      * What items in the version number need to be bumped
