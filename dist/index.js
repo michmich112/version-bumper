@@ -59,8 +59,8 @@ function main() {
                 return SUCCESS;
             }
             const GIT_OPTIONS = {
-                userName: 'version-bumper',
-                userEmail: 'bumper@boringday.co',
+                userName: options.username || 'version-bumper',
+                userEmail: options.email || 'bumper@boringday.co',
                 message: state.skip ? '[SKIP] ' : '' + `Updated version ${state.curVersion} -> ${state.newVersion}.`,
                 tag: state.tag ? { name: state.newVersion } : undefined,
                 token: core.getInput('github-token'),
