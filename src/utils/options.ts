@@ -58,9 +58,31 @@ export function getBranchFromTrigger(trigger: RuleTrigger): string {
       branch = process.env.GITHUB_REF?.substring('refs/heads/'.length) || '';
       break;
   }
+  core.info(`process.env.GITHUB_BASE_REF ${process.env.GITHUB_BASE_REF}`);
   core.info(`process.env.GITHUB_HEAD_REF: ${process.env.GITHUB_HEAD_REF}`);
   core.info(`process.env.GITHUB_REF: ${process.env.GITHUB_REF}`);
   core.info(`Current Branch identified: ${branch}`);
+  return branch;  
+}
+
+/**
+ * Get the destination branch for an action,
+ * this is principally used for pull requests to match head and base refs
+ * @param trigger {RuleTrigger}
+ * @returns {string}
+ */
+export function getDestBranchFromTrigger(trigger: RuleTrigger): string {
+  let branch: string;
+  switch (trigger) {
+    case 'pull-request':
+      branch = process.env.GITHUB_BASE_REF || '';
+      break;
+    case 'commit':
+    case 'manual':
+    default:
+      branch = process.env.GITHUB_REF?.substring('refs/heads/'.length) || '';
+      break;
+  }
   return branch;
 }
 
@@ -237,12 +259,13 @@ export function getTrigger(): RuleTrigger {
 export async function getBumperState(options: BumperOptionsFile): Promise<BumperState> {
   const trigger: RuleTrigger = getTrigger(),
     branch = getBranchFromTrigger(trigger),
+    destBranch = getDestBranchFromTrigger(trigger),
     skip = getSkipOption(options),
     schemeRegExp = getSchemeRegex(options),
     schemeDefinition = getSchemeDefinition(options),
     curVersion = await getCurVersion(options),
-    tag: boolean = getTag(options, trigger, branch),
-    newVersion = await bumpVersion(options, trigger, branch),
+    tag: boolean = getTag(options, trigger, branch, destBranch),
+    newVersion = await bumpVersion(options, trigger, branch, destBranch),
     files = getFiles(options);
   const state = {
     curVersion,
@@ -253,6 +276,7 @@ export async function getBumperState(options: BumperOptionsFile): Promise<Bumper
     tag,
     trigger,
     branch,
+    destBranch,
     files
   };
   core.info(`State -> ${JSON.stringify(state)}`);

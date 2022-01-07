@@ -9,5 +9,6 @@ export default interface BumperState {
   tag: boolean,               // Tag commit flag
   trigger: RuleTrigger,       // trigger causing the action to be run
   branch: string,             // branch on which the action is run
+  destBranch: string,         // destination branch for pull requests
   files: VersionFile[]        // branch on which the action is run
 }
