@@ -36,7 +36,7 @@ Without options file
 ```yaml
 name: Manage versions
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   bump:
@@ -66,8 +66,8 @@ jobs:
               "suffix": "-beta",
               "bump":"build"
             },{
-              "trigger": "commit",
-              "branch": "main",
+              "trigger": "pull-request",
+              "destBranch": "main",
               "suffix": "-rc",
               "bump": "minor",
               "tag": true
