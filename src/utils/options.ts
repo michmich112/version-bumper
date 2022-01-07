@@ -210,8 +210,10 @@ export function normalizeFiles(files: (VersionFile | string)[]): VersionFile[] {
  *  - workflow_dispatch: any
  */
 export function getTrigger(): RuleTrigger {
-  let { eventName, action } = github.context;
-  console.info(`Trigger -> ${eventName} - ${action}`);
+  let { eventName, payload } = github.context;
+  console.info(`Trigger -> ${eventName}`);
+  console.info("payload", payload);
+  console.info("payload_action", payload.action);
   switch (eventName) {
     case 'push':
       return 'commit';
