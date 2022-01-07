@@ -58,9 +58,6 @@ export function getBranchFromTrigger(trigger: RuleTrigger): string {
       branch = process.env.GITHUB_REF?.substring('refs/heads/'.length) || '';
       break;
   }
-  core.info(`process.env.GITHUB_BASE_REF ${process.env.GITHUB_BASE_REF}`);
-  core.info(`process.env.GITHUB_HEAD_REF: ${process.env.GITHUB_HEAD_REF}`);
-  core.info(`process.env.GITHUB_REF: ${process.env.GITHUB_REF}`);
   core.info(`Current Branch identified: ${branch}`);
   return branch;  
 }
@@ -83,6 +80,7 @@ export function getDestBranchFromTrigger(trigger: RuleTrigger): string {
       branch = process.env.GITHUB_REF?.substring('refs/heads/'.length) || '';
       break;
   }
+  core.info(`Current Dest Branch identified: ${branch}`);
   return branch;
 }
 
