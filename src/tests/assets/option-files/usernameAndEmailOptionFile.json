@@ -1,14 +1,13 @@
 {
-  "scheme": "custom",
-  "username": "DoomGuy",
-  "email": "guy@doom.id",
-  "schemeDefinition": "major.minor[.build][->patch]",
-  "versionFile": "./package.json",
+  "scheme": "semantic",
+  "versionFile": "./src/tests/assets/package-semantic-stub.json",
+  "username": "usernameOverride",
+  "email": "email@override.co",
   "files": ["./src/example/file1", {
     "path": "./src/example/file2"
   },{
     "path": "./src/example/file3",
-    "line": 3
+    "line": 69
   }],
   "rules": [
     {

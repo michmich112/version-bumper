@@ -2,30 +2,32 @@
  * Data definition for the Options file
  */
 export default interface BumperOptionsFile {
-    scheme: VersionScheme,
-    schemeDefinition?: string,
-    skip?: boolean,
-    versionFile: VersionFile,
-    files: (VersionFile | string)[],
-    rules: BumpRule[]
+  scheme: VersionScheme,
+  schemeDefinition?: string,
+  username?: string,
+  email?: string,
+  skip?: boolean,
+  versionFile: VersionFile,
+  files: (VersionFile | string)[],
+  rules: BumpRule[]
 }
 
 /**
  * Data necessary to find locate the version file and extract the current version
  */
 export interface VersionFile {
-    /**
-     * Relative path to the version file
-     * path is relative to project root
-     * must be complete path with filename and extension
-     */
-    path: string,
+  /**
+   * Relative path to the version file
+   * path is relative to project root
+   * must be complete path with filename and extension
+   */
+  path: string,
 
-    /**
-     * Accessor that the program looks for to find the current version number
-     * If omitted regex based on the scheme will be used to find the version
-     */
-    line?: number
+  /**
+   * Accessor that the program looks for to find the current version number
+   * If omitted regex based on the scheme will be used to find the version
+   */
+  line?: number
 }
 
 /*export interface VersionFileOptions {
@@ -60,70 +62,70 @@ export interface VersionFile {
  * - branch : branch regex which should trigger the rule
  */
 export interface BumpRule {
-    /**
-     * Action that triggers the bump to occur
-     */
-    trigger: RuleTrigger,
+  /**
+   * Action that triggers the bump to occur
+   */
+  trigger: RuleTrigger,
 
-    /**
-     * Comment that triggers the rule
-     * Only used when the trigger is pr-comment
-     */
-    // comment?: string,
+  /**
+   * Comment that triggers the rule
+   * Only used when the trigger is pr-comment
+   */
+  // comment?: string,
 
-    /**
-     * Allows the bumper to create a commit tag for the bump
-     */
-    tag?: boolean,
+  /**
+   * Allows the bumper to create a commit tag for the bump
+   */
+  tag?: boolean,
 
-    /**
-     * Optional branch on which the rule should take effect
-     * This is a regexp and can be matched with a wildcard
-     */
-    branch?: string,
+  /**
+   * Optional branch on which the rule should take effect
+   * This is a regexp and can be matched with a wildcard
+   */
+  branch?: string,
 
-    /**
-     * What items in the version number need to be bumped
-     */
-    bump?: string | string[],
+  /**
+   * What items in the version number need to be bumped
+   */
+  bump?: string | string[],
 
-    /**
-     * Bump the version status
-     * E.g. bump the version to be a release candidate when there is a pull request into master
-     */
-    bumpStatus?: VersionReleaseStatus
+  /**
+   * Bump the version status
+   * E.g. bump the version to be a release candidate when there is a pull request into master
+   */
+  bumpStatus?: VersionReleaseStatus
 
-    /**
-     * Reset elements in the version number
-     * E.g
-     * With version desc = major.minor[.build] -> current: 1.2.3
-     * set reset: ['build']
-     * => 1.2.0
-     */
-    reset?: string | string[]
+  /**
+   * Reset elements in the version number
+   * E.g
+   * With version desc = major.minor[.build] -> current: 1.2.3
+   * set reset: ['build']
+   * => 1.2.0
+   */
+  reset?: string | string[]
 
-    /**
-     * Set a prefix on the version when bumped
-     * with version desc = major.minor[.build] -> current 1.2.3
-     * set prefix: 'v.'
-     * => v.1.2.3
-     */
-    prefix?: string
+  /**
+   * Set a prefix on the version when bumped
+   * with version desc = major.minor[.build] -> current 1.2.3
+   * set prefix: 'v.'
+   * => v.1.2.3
+   */
+  prefix?: string
 
-    /**
-     * Set a suffix on the version when bumped
-     * with version desc = major.minor[.build] -> current 1.2.3
-     * set suffix: '-alpha'
-     * => 1.2.3-alpha
-     */
-    suffix?: string
+  /**
+   * Set a suffix on the version when bumped
+   * with version desc = major.minor[.build] -> current 1.2.3
+   * set suffix: '-alpha'
+   * => 1.2.3-alpha
+   */
+  suffix?: string
 }
 
 export type VersionScheme = 'custom' | any;
-export type RuleTrigger = 'commit' | 'pull-request' | 'manual'; //| 'pr-comment'
+export type RuleTrigger = 'commit' | 'pull-request' | 'pull-request-sync' | 'pull-request-other' | 'manual'; //| 'pr-comment'
 export type VersionReleaseStatus = 'alpha' | 'beta' | 'release-candidate' | 'release';
 export type Seperators = '.' | ',' | ';' | ':' | '-' | '_' | '>' | '<';
-export const seperators: Seperators[] = ['.' , ',' , ';' , ':' , '-' , '_' , '>' , '<'];
+export const seperators: Seperators[] = ['.', ',', ';', ':', '-', '_', '>', '<'];
 
 /**
  * String status names:

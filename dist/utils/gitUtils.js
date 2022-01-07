@@ -89,8 +89,9 @@ function commit(commitOptions, gitInterface) {
         // Commit all staged changes
         yield git.commitStagedChanges(commitOptions.message);
         // Tag the commit if tag info is passed
-        if (commitOptions.tag)
+        if (commitOptions.tag) {
             yield git.tagLatestCommit(commitOptions.tag);
+        }
         return git;
     });
 }

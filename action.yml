@@ -28,6 +28,12 @@ inputs:
   skip:
     description: 'Adds [SKIP] prefix to the commit message to prevent CI/CD build'
     required: false
+  email:
+    description: 'Commiter email address to overide the default'
+    required: false
+  username:
+    description: 'Github Username of the committer to override the default'
+    required: false
   # Github token to commit the bumps
   github-token:
     description: 'Authorized github token'

@@ -444,6 +444,43 @@ describe("Get Bumper Options", () => {
                     fail(e);
                 }
             }));
+            test("Username and email Override", () => __awaiter(void 0, void 0, void 0, function* () {
+                wfInput = {
+                    'options-file': "./src/tests/assets/option-files/usernameAndEmailOptionFile.json",
+                    'files': "[]"
+                };
+                let options = yield (0, options_1.getBumperOptions)();
+                console.log(`Options -> ${JSON.stringify(options)}`);
+                expect(options).toStrictEqual({
+                    "scheme": "semantic",
+                    "schemeDefinition": "major.minor[.build]",
+                    "username": "usernameOverride",
+                    "email": "email@override.co",
+                    "versionFile": { "path": "./src/tests/assets/package-semantic-stub.json" },
+                    "files": [{ "path": "./src/tests/assets/package-semantic-stub.json" }],
+                    "rules": [
+                        {
+                            "trigger": "commit",
+                            "bump": "build"
+                        },
+                        {
+                            "trigger": "commit",
+                            "bump": "minor",
+                            "branch": "master",
+                            "reset": "build"
+                        },
+                        {
+                            "trigger": "commit",
+                            "bump": "major",
+                            "branch": "release",
+                            "reset": [
+                                "minor",
+                                "build"
+                            ]
+                        }
+                    ]
+                });
+            }));
         });
     });
 });
