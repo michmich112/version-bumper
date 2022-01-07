@@ -129,10 +129,11 @@ export async function getCurVersion(options: BumperOptionsFile) {
  * @param {BumperOptionsFile} options
  * @param {RuleTrigger} trigger
  * @param {string} branch
+ * @param {string} destBranch destination branch (different if the trigger is a pull request)
  * @returns {BumpRule[]}
  */
-export function getRules(options: BumperOptionsFile, trigger: RuleTrigger, branch: string): BumpRule[] {
-  return options.rules.filter((rule: BumpRule) => isRuleApplicable(rule, trigger, branch));
+export function getRules(options: BumperOptionsFile, trigger: RuleTrigger, branch: string, destBranch?: string): BumpRule[] {
+  return options.rules.filter((rule: BumpRule) => isRuleApplicable(rule, trigger, branch, destBranch));
 }
 
 /**
@@ -182,10 +183,11 @@ function getApplicableSuffix(rules: BumpRule[]): string {
  * @param {BumperOptionsFile} options
  * @param {RuleTrigger} trigger
  * @param {string} branch
+ * @param {string} destBranch
  * @returns {boolean}
  */
-export function getTag(options: BumperOptionsFile, trigger: RuleTrigger, branch: string): boolean {
-  const rules = getRules(options, trigger, branch);
+export function getTag(options: BumperOptionsFile, trigger: RuleTrigger, branch: string, destBranch: string): boolean {
+  const rules = getRules(options, trigger, branch, destBranch);
   return rules.reduce((pre: boolean, cur: BumpRule) => pre || (cur.tag || false), false);
 }
 
@@ -227,8 +229,8 @@ export function getOptionalItems(scheme: string) {
   if (optional === null) return [];
   else return optional.reduce((pre: string[], cur: string) => {
     if (getIntrabracketContent(cur)) return [...pre,
-      cur.split(/[\[\]]+/g)[0], // cur.split(/[\[\]]+/g)[0] -> get the first item in the interbracket content that corresponds to the tag
-      ...getOptionalItems(cur)]; // recursively get optional from the current top level interbracket content
+    cur.split(/[\[\]]+/g)[0], // cur.split(/[\[\]]+/g)[0] -> get the first item in the interbracket content that corresponds to the tag
+    ...getOptionalItems(cur)]; // recursively get optional from the current top level interbracket content
     else return [...pre, cur]; // if there is no other interabracket content then no need to recurse, this is the tag
   }, []);
 }
@@ -298,9 +300,9 @@ export function versionMapToString(options: BumperOptionsFile, map: { [index: st
  * @param trigger
  * @param branch
  */
-export async function bumpVersion(options: BumperOptionsFile, trigger: RuleTrigger, branch: string): Promise<string> {
+export async function bumpVersion(options: BumperOptionsFile, trigger: RuleTrigger, branch: string, destBranch?: string): Promise<string> {
   const curVersion: string = await getCurVersion(options);
-  const rules: BumpRule[] = getRules(options, trigger, branch);
+  const rules: BumpRule[] = getRules(options, trigger, branch, destBranch);
   const resetItems: string[] = getResetItems(rules);
   const bumpItems: string[] = getBumpItems(rules);
   const prefix: string = getApplicablePrefix(rules);

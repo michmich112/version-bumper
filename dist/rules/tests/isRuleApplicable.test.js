@@ -54,4 +54,77 @@ describe('[ RULE ] - isRuleApplicable', () => {
         const branch = 'randomBranch';
         expect((0, isRuleApplicable_1.default)(rule, trigger, branch)).toBe(false);
     });
+    test('it should match if destination branch matches and is the only defined', () => {
+        const rule = {
+            trigger: 'pull-request',
+            destBranch: 'master',
+        };
+        const trigger = 'pull-request';
+        const branch = 'randomBranch';
+        const destBranch = 'master';
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch, destBranch)).toBe(true);
+    });
+    test('it should match if branch matches and is the only defined', () => {
+        const rule = {
+            trigger: 'pull-request',
+            branch: 'feature-branch',
+        };
+        const trigger = 'pull-request';
+        const branch = 'feature-branch';
+        const destBranch = 'master';
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch, destBranch)).toBe(true);
+    });
+    test('it should match if branch and destination branch matches', () => {
+        const rule = {
+            trigger: 'pull-request',
+            branch: 'feature-branch',
+            destBranch: 'master',
+        };
+        const trigger = 'pull-request';
+        const branch = 'feature-branch';
+        const destBranch = 'master';
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch, destBranch)).toBe(true);
+    });
+    test('it should not match if only branch matches and destination branch does not match', () => {
+        const rule = {
+            trigger: 'pull-request',
+            branch: 'feature-branch',
+            destBranch: 'develop',
+        };
+        const trigger = 'pull-request';
+        const branch = 'feature-branch';
+        const destBranch = 'master';
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch, destBranch)).toBe(false);
+    });
+    test('it should not match if only destBranch matches and destination branch does not match', () => {
+        const rule = {
+            trigger: 'pull-request',
+            branch: 'develop',
+            destBranch: 'master',
+        };
+        const trigger = 'pull-request';
+        const branch = 'feature-branch';
+        const destBranch = 'master';
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch, destBranch)).toBe(false);
+    });
+    test('it should not match if either destBranch nor branch match', () => {
+        const rule = {
+            trigger: 'pull-request',
+            branch: 'develop',
+            destBranch: 'release',
+        };
+        const trigger = 'pull-request';
+        const branch = 'feature-branch';
+        const destBranch = 'master';
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch, destBranch)).toBe(false);
+    });
+    test('it should match if neithere branch nor destBranch are defined', () => {
+        const rule = {
+            trigger: 'pull-request',
+        };
+        const trigger = 'pull-request';
+        const branch = 'feature-branch';
+        const destBranch = 'master';
+        expect((0, isRuleApplicable_1.default)(rule, trigger, branch, destBranch)).toBe(true);
+    });
 });

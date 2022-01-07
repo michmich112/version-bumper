@@ -58,9 +58,29 @@ export function getBranchFromTrigger(trigger: RuleTrigger): string {
       branch = process.env.GITHUB_REF?.substring('refs/heads/'.length) || '';
       break;
   }
-  core.info(`process.env.GITHUB_HEAD_REF: ${process.env.GITHUB_HEAD_REF}`);
-  core.info(`process.env.GITHUB_REF: ${process.env.GITHUB_REF}`);
   core.info(`Current Branch identified: ${branch}`);
+  return branch;  
+}
+
+/**
+ * Get the destination branch for an action,
+ * this is principally used for pull requests to match head and base refs
+ * @param trigger {RuleTrigger}
+ * @returns {string}
+ */
+export function getDestBranchFromTrigger(trigger: RuleTrigger): string {
+  let branch: string;
+  switch (trigger) {
+    case 'pull-request':
+      branch = process.env.GITHUB_BASE_REF || '';
+      break;
+    case 'commit':
+    case 'manual':
+    default:
+      branch = process.env.GITHUB_REF?.substring('refs/heads/'.length) || '';
+      break;
+  }
+  core.info(`Current Dest Branch identified: ${branch}`);
   return branch;
 }
 
@@ -68,13 +88,16 @@ export function getBranchFromTrigger(trigger: RuleTrigger): string {
  * Get all bumper options
  */
 export async function getBumperOptions(): Promise<BumperOptionsFile> {
-  const optionsFile = core.getInput('options-file'),
-    scheme = core.getInput('scheme'),
-    skip = core.getInput('skip'),
-    customScheme = core.getInput('custom-scheme'),
-    versionFile = core.getInput('version-file'),
-    files = core.getInput('files'),
-    rules = core.getInput('rules');
+  const optionsFile = core.getInput('options-file');
+  const scheme = core.getInput('scheme');
+  const skip = core.getInput('skip');
+  const customScheme = core.getInput('custom-scheme');
+  const versionFile = core.getInput('version-file');
+  const files = core.getInput('files');
+  const rules = core.getInput('rules');
+  const username = core.getInput('username');
+  const email = core.getInput('email');
+
   let error = ""; // error message
   let bumperOptions: any = {};
   let err = (message: string) => {
@@ -155,6 +178,10 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
     err("Rules are not defined in option file or workflow input.");
   }
 
+  if (skip) bumperOptions.skip = skip;
+  if (username) bumperOptions.username = username;
+  if (email) bumperOptions.email = email;
+
   if (error !== "") throw new Error(error);
   else {
     console.log(JSON.stringify(bumperOptions));
@@ -203,13 +230,16 @@ export function normalizeFiles(files: (VersionFile | string)[]): VersionFile[] {
  *  - workflow_dispatch: any
  */
 export function getTrigger(): RuleTrigger {
-  let { eventName } = github.context;
-  console.info(`Trigger -> ${eventName}`);
+  let { eventName, payload } = github.context;
+  const payload_action = payload.action;
+  console.info(`Trigger -> ${eventName} - ${payload_action}`);
   switch (eventName) {
     case 'push':
       return 'commit';
     case 'pull_request':
-      return 'pull-request';
+      if (payload_action === "opened") return 'pull-request';
+      if (payload_action === "synchronize") return 'pull-request-sync';
+      return 'pull-request-other';
     // case 'pull_request_review_comment':
     //   return 'pr-comment';
     case 'workflow_dispatch':
@@ -227,12 +257,13 @@ export function getTrigger(): RuleTrigger {
 export async function getBumperState(options: BumperOptionsFile): Promise<BumperState> {
   const trigger: RuleTrigger = getTrigger(),
     branch = getBranchFromTrigger(trigger),
+    destBranch = getDestBranchFromTrigger(trigger),
     skip = getSkipOption(options),
     schemeRegExp = getSchemeRegex(options),
     schemeDefinition = getSchemeDefinition(options),
     curVersion = await getCurVersion(options),
-    tag: boolean = getTag(options, trigger, branch),
-    newVersion = await bumpVersion(options, trigger, branch),
+    tag: boolean = getTag(options, trigger, branch, destBranch),
+    newVersion = await bumpVersion(options, trigger, branch, destBranch),
     files = getFiles(options);
   const state = {
     curVersion,
@@ -243,6 +274,7 @@ export async function getBumperState(options: BumperOptionsFile): Promise<Bumper
     tag,
     trigger,
     branch,
+    destBranch,
     files
   };
   core.info(`State -> ${JSON.stringify(state)}`);

@@ -32,8 +32,8 @@ async function main() {
     }
 
     const GIT_OPTIONS: CommitOptions = {
-      userName: 'version-bumper',
-      userEmail: 'bumper@boringday.co',
+      userName: options.username || 'version-bumper',
+      userEmail: options.email || 'bumper@boringday.co',
       message: state.skip ? '[SKIP] ' : '' + `Updated version ${state.curVersion} -> ${state.newVersion}.`,
       tag: state.tag ? { name: state.newVersion } : undefined,
       token: core.getInput('github-token'),
@@ -43,7 +43,6 @@ async function main() {
     const git = await configureGit(GIT_OPTIONS);
     await (await git.fetchRemoteBranch(state.branch)).checkoutBranch(state.branch);
     await bump(state);
-
 
     await commitAndPush(GIT_OPTIONS);
 

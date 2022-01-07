@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getSkipOption = exports.getFiles = exports.getBumperOptions = exports.getBranchFromTrigger = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
+exports.getBumperState = exports.getTrigger = exports.normalizeFiles = exports.getSkipOption = exports.getFiles = exports.getBumperOptions = exports.getDestBranchFromTrigger = exports.getBranchFromTrigger = exports.getSchemeDefinition = exports.normalizeOptions = void 0;
 const definedSchemes = __importStar(require("../schemes.json"));
 const utils_1 = require("./utils");
 const core = __importStar(require("@actions/core"));
@@ -90,6 +90,7 @@ function getBranchFromTrigger(trigger) {
             branch = ((_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.substring('refs/heads/'.length)) || '';
             break;
     }
+    core.info(`process.env.GITHUB_BASE_REF ${process.env.GITHUB_BASE_REF}`);
     core.info(`process.env.GITHUB_HEAD_REF: ${process.env.GITHUB_HEAD_REF}`);
     core.info(`process.env.GITHUB_REF: ${process.env.GITHUB_REF}`);
     core.info(`Current Branch identified: ${branch}`);
@@ -97,11 +98,41 @@ function getBranchFromTrigger(trigger) {
 }
 exports.getBranchFromTrigger = getBranchFromTrigger;
 /**
+ * Get the destination branch for an action,
+ * this is principally used for pull requests to match head and base refs
+ * @param trigger {RuleTrigger}
+ * @returns {string}
+ */
+function getDestBranchFromTrigger(trigger) {
+    var _a;
+    let branch;
+    switch (trigger) {
+        case 'pull-request':
+            branch = process.env.GITHUB_BASE_REF || '';
+            break;
+        case 'commit':
+        case 'manual':
+        default:
+            branch = ((_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.substring('refs/heads/'.length)) || '';
+            break;
+    }
+    return branch;
+}
+exports.getDestBranchFromTrigger = getDestBranchFromTrigger;
+/**
  * Get all bumper options
  */
 function getBumperOptions() {
     return __awaiter(this, void 0, void 0, function* () {
-        const optionsFile = core.getInput('options-file'), scheme = core.getInput('scheme'), skip = core.getInput('skip'), customScheme = core.getInput('custom-scheme'), versionFile = core.getInput('version-file'), files = core.getInput('files'), rules = core.getInput('rules');
+        const optionsFile = core.getInput('options-file');
+        const scheme = core.getInput('scheme');
+        const skip = core.getInput('skip');
+        const customScheme = core.getInput('custom-scheme');
+        const versionFile = core.getInput('version-file');
+        const files = core.getInput('files');
+        const rules = core.getInput('rules');
+        const username = core.getInput('username');
+        const email = core.getInput('email');
         let error = ""; // error message
         let bumperOptions = {};
         let err = (message) => {
@@ -192,6 +223,12 @@ function getBumperOptions() {
             || !Array.isArray(bumperOptions.rules)) {
             err("Rules are not defined in option file or workflow input.");
         }
+        if (skip)
+            bumperOptions.skip = skip;
+        if (username)
+            bumperOptions.username = username;
+        if (email)
+            bumperOptions.email = email;
         if (error !== "")
             throw new Error(error);
         else {
@@ -242,13 +279,18 @@ exports.normalizeFiles = normalizeFiles;
  *  - workflow_dispatch: any
  */
 function getTrigger() {
-    let { eventName } = github.context;
-    console.info(`Trigger -> ${eventName}`);
+    let { eventName, payload } = github.context;
+    const payload_action = payload.action;
+    console.info(`Trigger -> ${eventName} - ${payload_action}`);
     switch (eventName) {
         case 'push':
             return 'commit';
         case 'pull_request':
-            return 'pull-request';
+            if (payload_action === "opened")
+                return 'pull-request';
+            if (payload_action === "synchronize")
+                return 'pull-request-sync';
+            return 'pull-request-other';
         // case 'pull_request_review_comment':
         //   return 'pr-comment';
         case 'workflow_dispatch':
@@ -265,7 +307,7 @@ exports.getTrigger = getTrigger;
  */
 function getBumperState(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), skip = getSkipOption(options), schemeRegExp = (0, utils_1.getSchemeRegex)(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield (0, utils_1.getCurVersion)(options), tag = (0, utils_1.getTag)(options, trigger, branch), newVersion = yield (0, utils_1.bumpVersion)(options, trigger, branch), files = getFiles(options);
+        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), destBranch = getDestBranchFromTrigger(trigger), skip = getSkipOption(options), schemeRegExp = (0, utils_1.getSchemeRegex)(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield (0, utils_1.getCurVersion)(options), tag = (0, utils_1.getTag)(options, trigger, branch, destBranch), newVersion = yield (0, utils_1.bumpVersion)(options, trigger, branch, destBranch), files = getFiles(options);
         const state = {
             curVersion,
             newVersion,
@@ -275,6 +317,7 @@ function getBumperState(options) {
             tag,
             trigger,
             branch,
+            destBranch,
             files
         };
         core.info(`State -> ${JSON.stringify(state)}`);
