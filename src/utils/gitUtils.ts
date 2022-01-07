@@ -63,7 +63,9 @@ export async function commit(commitOptions: CommitOptions, gitInterface?: Git): 
   await git.commitStagedChanges(commitOptions.message);
 
   // Tag the commit if tag info is passed
-  if (commitOptions.tag) await git.tagLatestCommit(commitOptions.tag);
+  if (commitOptions.tag) {
+    await git.tagLatestCommit(commitOptions.tag);
+  }
 
   return git;
 }

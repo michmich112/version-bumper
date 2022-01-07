@@ -101,7 +101,15 @@ exports.getBranchFromTrigger = getBranchFromTrigger;
  */
 function getBumperOptions() {
     return __awaiter(this, void 0, void 0, function* () {
-        const optionsFile = core.getInput('options-file'), scheme = core.getInput('scheme'), skip = core.getInput('skip'), customScheme = core.getInput('custom-scheme'), versionFile = core.getInput('version-file'), files = core.getInput('files'), rules = core.getInput('rules');
+        const optionsFile = core.getInput('options-file');
+        const scheme = core.getInput('scheme');
+        const skip = core.getInput('skip');
+        const customScheme = core.getInput('custom-scheme');
+        const versionFile = core.getInput('version-file');
+        const files = core.getInput('files');
+        const rules = core.getInput('rules');
+        const username = core.getInput('username');
+        const email = core.getInput('email');
         let error = ""; // error message
         let bumperOptions = {};
         let err = (message) => {
@@ -192,6 +200,12 @@ function getBumperOptions() {
             || !Array.isArray(bumperOptions.rules)) {
             err("Rules are not defined in option file or workflow input.");
         }
+        if (skip)
+            bumperOptions.skip = skip;
+        if (username)
+            bumperOptions.username = username;
+        if (email)
+            bumperOptions.email = email;
         if (error !== "")
             throw new Error(error);
         else {
