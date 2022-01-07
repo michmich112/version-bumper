@@ -257,14 +257,17 @@ exports.normalizeFiles = normalizeFiles;
  */
 function getTrigger() {
     let { eventName, payload } = github.context;
-    console.info(`Trigger -> ${eventName}`);
-    console.info("payload", payload);
-    console.info("payload_action", payload.action);
+    const payload_action = payload.action;
+    console.info(`Trigger -> ${eventName} - ${payload_action}`);
     switch (eventName) {
         case 'push':
             return 'commit';
         case 'pull_request':
-            return 'pull-request';
+            if (payload_action === "opened")
+                return 'pull-request';
+            if (payload_action === "synchronize")
+                return 'pull-request-sync';
+            return 'pull-request-other';
         // case 'pull_request_review_comment':
         //   return 'pr-comment';
         case 'workflow_dispatch':

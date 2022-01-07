@@ -122,7 +122,7 @@ export interface BumpRule {
 }
 
 export type VersionScheme = 'custom' | any;
-export type RuleTrigger = 'commit' | 'pull-request' | 'manual'; //| 'pr-comment'
+export type RuleTrigger = 'commit' | 'pull-request' | 'pull-request-sync' | 'pull-request-other' | 'manual'; //| 'pr-comment'
 export type VersionReleaseStatus = 'alpha' | 'beta' | 'release-candidate' | 'release';
 export type Seperators = '.' | ',' | ';' | ':' | '-' | '_' | '>' | '<';
 export const seperators: Seperators[] = ['.', ',', ';', ':', '-', '_', '>', '<'];
