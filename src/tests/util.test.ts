@@ -364,7 +364,7 @@ describe("Get Current version from files", () => {
     });
   });
 
-  test("Incorrect file path", async (done) => {
+  test("Incorrect file path", async () => {
     let filePath = "./src/tests/assets/non-existent-file.txt",
       options: BumperOptionsFile = {
         scheme: "custom",
@@ -377,7 +377,7 @@ describe("Get Current version from files", () => {
       await getCurVersion(options);
       fail("Should return an error");
     } catch (e) {
-      done();
+      expect(true).toBe(true);
     }
   });
 
@@ -393,7 +393,7 @@ describe("Get Current version from files", () => {
     try {
       await getCurVersion(options);
       fail("Should return an error");
-    } catch (e) {
+    } catch (e: any) {
       expect(e.message).toBe(`No match found in file. Unable to identify current version number.`);
     }
   });
@@ -523,11 +523,11 @@ describe("Get Version Map tests", () => {
 
   test("Preset semantic", () => {
     let options: BumperOptionsFile = {
-        scheme: "semantic",
-        versionFile: { path: "" },
-        files: [],
-        rules: []
-      },
+      scheme: "semantic",
+      versionFile: { path: "" },
+      files: [],
+      rules: []
+    },
       version = "1.2.3",
       map = getVersionMap(options, version);
     expect(map).toStrictEqual({
@@ -548,12 +548,12 @@ describe("Get Version Map tests", () => {
 
   test("No Optional Custom", () => {
     let options: BumperOptionsFile = {
-        scheme: "custom",
-        schemeDefinition: "version.patch->build",
-        versionFile: { path: "" },
-        files: [],
-        rules: []
-      },
+      scheme: "custom",
+      schemeDefinition: "version.patch->build",
+      versionFile: { path: "" },
+      files: [],
+      rules: []
+    },
       version = "1.2->3",
       map = getVersionMap(options, version);
 
@@ -566,12 +566,12 @@ describe("Get Version Map tests", () => {
 
   test("Single Optional Custom", () => {
     let options: BumperOptionsFile = {
-        scheme: "custom",
-        schemeDefinition: "version.patch[->build]",
-        versionFile: { path: "" },
-        files: [],
-        rules: []
-      },
+      scheme: "custom",
+      schemeDefinition: "version.patch[->build]",
+      versionFile: { path: "" },
+      files: [],
+      rules: []
+    },
       version = "1.2->3",
       map = getVersionMap(options, version);
 
@@ -593,12 +593,12 @@ describe("Get Version Map tests", () => {
 
   test("Multiple Optional Custom", () => {
     let options: BumperOptionsFile = {
-        scheme: "custom",
-        schemeDefinition: "major[.minor][.build][->patch]",
-        versionFile: { path: "" },
-        files: [],
-        rules: []
-      },
+      scheme: "custom",
+      schemeDefinition: "major[.minor][.build][->patch]",
+      versionFile: { path: "" },
+      files: [],
+      rules: []
+    },
       version = "1.2.3->4",
       map = getVersionMap(options, version);
 
@@ -634,12 +634,12 @@ describe("Get Version Map tests", () => {
 
 describe("Version map to String tests", () => {
   let options: BumperOptionsFile = {
-      scheme: "custom",
-      schemeDefinition: "major.minor.build",
-      versionFile: { path: '' },
-      files: [],
-      rules: []
-    },
+    scheme: "custom",
+    schemeDefinition: "major.minor.build",
+    versionFile: { path: '' },
+    files: [],
+    rules: []
+  },
     map = {
       major: 2,
       minor: 1,

@@ -19,17 +19,17 @@ describe("Get Version files", () => {
     };
     test("All VersionFile format", () => {
         options.files = [{ path: "./first/file/path.txt" }, { path: "./second/file/path.json", line: 69 }];
-        let files = options_1.getFiles(options);
+        let files = (0, options_1.getFiles)(options);
         expect(files).toStrictEqual([{ path: "./first/file/path.txt" }, { path: "./second/file/path.json", line: 69 }]);
     });
     test("All String format", () => {
         options.files = ["./first/file/path.txt", "./second/file/path.json"];
-        let files = options_1.getFiles(options);
+        let files = (0, options_1.getFiles)(options);
         expect(files).toStrictEqual([{ path: "./first/file/path.txt" }, { path: "./second/file/path.json" }]);
     });
     test("Mixed format", () => {
         options.files = ["./first/file/path.txt", { path: "./second/file/path.json", line: 69 }];
-        let files = options_1.getFiles(options);
+        let files = (0, options_1.getFiles)(options);
         expect(files).toStrictEqual([{ path: "./first/file/path.txt" }, { path: "./second/file/path.json", line: 69 }]);
     });
 });
@@ -53,7 +53,7 @@ describe("Get Bumper Options", () => {
         test("Correct full options file", () => __awaiter(void 0, void 0, void 0, function* () {
             wfInput = { 'options-file': "./src/tests/assets/option-files/correctOptionFiles.json" };
             try {
-                let options = yield options_1.getBumperOptions();
+                let options = yield (0, options_1.getBumperOptions)();
                 console.log(`Options -> ${JSON.stringify(options)}`);
                 expect(options).toStrictEqual({
                     "scheme": "semantic",
@@ -102,7 +102,7 @@ describe("Get Bumper Options", () => {
                     'scheme': 'custom'
                 };
                 try {
-                    yield options_1.getBumperOptions();
+                    yield (0, options_1.getBumperOptions)();
                     console.error("Should fail with no custom scheme defined.");
                     fail("Should fail with no custom scheme defined.");
                 }
@@ -115,7 +115,7 @@ describe("Get Bumper Options", () => {
                     'custom-scheme': 'major.minor[.build]'
                 };
                 try {
-                    let options = yield options_1.getBumperOptions();
+                    let options = yield (0, options_1.getBumperOptions)();
                     console.log(`Options -> ${JSON.stringify(options)}`);
                     expect(options).toStrictEqual({
                         "scheme": "custom",
@@ -163,7 +163,7 @@ describe("Get Bumper Options", () => {
                     'custom-scheme': 'major-minor[->build]'
                 };
                 try {
-                    let options = yield options_1.getBumperOptions();
+                    let options = yield (0, options_1.getBumperOptions)();
                     console.log(`Options -> ${JSON.stringify(options)}`);
                     expect(options).toStrictEqual({
                         "scheme": "custom",
@@ -211,7 +211,7 @@ describe("Get Bumper Options", () => {
                     'custom-scheme': 'major-minor[->build]'
                 };
                 try {
-                    let options = yield options_1.getBumperOptions();
+                    let options = yield (0, options_1.getBumperOptions)();
                     console.log(`Options -> ${JSON.stringify(options)}`);
                     expect(options).toStrictEqual({
                         "scheme": "custom",
@@ -259,7 +259,7 @@ describe("Get Bumper Options", () => {
                     'version-file': "./src/tests/assets/package-custom-stub.json"
                 };
                 try {
-                    let options = yield options_1.getBumperOptions();
+                    let options = yield (0, options_1.getBumperOptions)();
                     console.log(`Options -> ${JSON.stringify(options)}`);
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
@@ -307,7 +307,7 @@ describe("Get Bumper Options", () => {
                     'files': "[]"
                 };
                 try {
-                    let options = yield options_1.getBumperOptions();
+                    let options = yield (0, options_1.getBumperOptions)();
                     console.log(`Options -> ${JSON.stringify(options)}`);
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
@@ -345,7 +345,7 @@ describe("Get Bumper Options", () => {
                     'files': '["./file1", {"path":"./file2"}, {"path":"./file3", "line":3}]'
                 };
                 try {
-                    let options = yield options_1.getBumperOptions();
+                    let options = yield (0, options_1.getBumperOptions)();
                     console.log(`Options -> ${JSON.stringify(options)}`);
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
@@ -393,7 +393,7 @@ describe("Get Bumper Options", () => {
                     'rules': "[]"
                 };
                 try {
-                    let options = yield options_1.getBumperOptions();
+                    let options = yield (0, options_1.getBumperOptions)();
                     console.log(`Options -> ${JSON.stringify(options)}`);
                     expect(options).toStrictEqual({
                         "scheme": "semantic",
@@ -419,7 +419,7 @@ describe("Get Bumper Options", () => {
                     'rules': '[{"trigger":"commit","bump":["minor","build"]}]'
                 };
                 try {
-                    let options = yield options_1.getBumperOptions();
+                    let options = yield (0, options_1.getBumperOptions)();
                     console.log(`Options -> ${JSON.stringify(options)}`);
                     expect(options).toStrictEqual({
                         "scheme": "semantic",

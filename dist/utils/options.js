@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -265,7 +265,7 @@ exports.getTrigger = getTrigger;
  */
 function getBumperState(options) {
     return __awaiter(this, void 0, void 0, function* () {
-        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), skip = getSkipOption(options), schemeRegExp = utils_1.getSchemeRegex(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield utils_1.getCurVersion(options), tag = utils_1.getTag(options, trigger, branch), newVersion = yield utils_1.bumpVersion(options, trigger, branch), files = getFiles(options);
+        const trigger = getTrigger(), branch = getBranchFromTrigger(trigger), skip = getSkipOption(options), schemeRegExp = (0, utils_1.getSchemeRegex)(options), schemeDefinition = getSchemeDefinition(options), curVersion = yield (0, utils_1.getCurVersion)(options), tag = (0, utils_1.getTag)(options, trigger, branch), newVersion = yield (0, utils_1.bumpVersion)(options, trigger, branch), files = getFiles(options);
         const state = {
             curVersion,
             newVersion,

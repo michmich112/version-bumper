@@ -6,7 +6,7 @@ import { getBumperOptions, getBumperState } from "./utils/options";
 import BumperOptionsFile, { VersionFile } from "./lib/types/OptionsFile.types";
 import BumperState from "./lib/types/BumperState.type";
 import * as readline from "readline";
-import { commitAndPush } from "./utils/gitUtils";
+import { commitAndPush, configureGit } from "./utils/gitUtils";
 import { CommitOptions } from "./lib/types/Git.types";
 import Git from './lib/Git';
 
@@ -15,7 +15,6 @@ const SUCCESS = 0,
   FAILURE = 1;
 
 async function main() {
-  collectStats();
 
   if (!core.getInput('github-token')) {
     core.error("Github token required");
@@ -31,8 +30,6 @@ async function main() {
       core.info('No bump rules applicable');
       return SUCCESS;
     }
-    await new Git().checkoutBranch(state.branch);
-    await bump(state);
 
     const GIT_OPTIONS: CommitOptions = {
       userName: 'version-bumper',
@@ -43,12 +40,19 @@ async function main() {
       branch: state.branch
     };
 
+    const git = await configureGit(GIT_OPTIONS);
+    await (await git.fetchRemoteBranch(state.branch)).checkoutBranch(state.branch);
+    await bump(state);
+
+
     await commitAndPush(GIT_OPTIONS);
 
     return SUCCESS;
-  } catch (e) {
+  } catch (e: any) {
+    const message = e.message + "/n" + e.stack;
     core.error(e.message);
-    return FAILURE;
+    core.setFailed(`Error: ${e.message}, Validate options file or create an issue if this persists`);
+    throw new Error(message);
   }
 }
 
@@ -59,7 +63,7 @@ async function bump(state: BumperState) {
   for (const file of files) {
     try {
       wbArray.push(await setNewVersion(file, curVersion, newVersion));
-    } catch (e) {
+    } catch (e: any) {
       core.error(`Error setting new version for file with path ${file.path}`);
       core.error(e.message);
     }
@@ -67,7 +71,7 @@ async function bump(state: BumperState) {
   for (const wb of wbArray) {
     try {
       await wb();
-    } catch (e) {
+    } catch (e: any) {
       core.error(`Write back error`);
       core.error(e.message);
     }
@@ -104,9 +108,5 @@ async function setNewVersion(file: VersionFile, curVersion: string, newVersion: 
   };
 }
 
-main()
-  .then(status => status)
-  .catch(e => {
-    core.error(e);
-    return FAILURE;
-  });
+collectStats(main);
+

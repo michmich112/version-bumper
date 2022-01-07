@@ -23,7 +23,7 @@ class Git {
      */
     checkoutBranch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('git', ['checkout', branch], this.execOptions);
+            yield (0, exec_1.exec)('git', ['checkout', branch], this.execOptions);
             return this;
         });
     }
@@ -34,7 +34,7 @@ class Git {
      */
     configUserName(userName) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('git', ['config', 'user.name', `"${userName}"`], this.execOptions);
+            yield (0, exec_1.exec)('git', ['config', 'user.name', `"${userName}"`], this.execOptions);
             return this;
         });
     }
@@ -45,7 +45,7 @@ class Git {
      */
     configUserEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('git', ['config', 'user.email', `"${email}"`], this.execOptions);
+            yield (0, exec_1.exec)('git', ['config', 'user.email', `"${email}"`], this.execOptions);
             return this;
         });
     }
@@ -56,7 +56,18 @@ class Git {
      */
     addRemote(remoteUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('git', ['remote', 'add', this.remoteName, remoteUrl], this.execOptions);
+            yield (0, exec_1.exec)('git', ['remote', 'add', this.remoteName, remoteUrl], this.execOptions);
+            return this;
+        });
+    }
+    /**
+     * Fetch branch from remote
+     * @param {string} branch: Branch name to fetch
+     * @returns {Promise<Git>}
+     */
+    fetchRemoteBranch(branch) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield (0, exec_1.exec)('git', ['fetch', this.remoteName, branch], this.execOptions);
             return this;
         });
     }
@@ -66,7 +77,7 @@ class Git {
      */
     stageNewModifications() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('git', ['add', '-u'], this.execOptions);
+            yield (0, exec_1.exec)('git', ['add', '-u'], this.execOptions);
             return this;
         });
     }
@@ -77,7 +88,7 @@ class Git {
      */
     commitStagedChanges(message) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('git', ['commit', '-v', '-m', `"${message}"`], this.execOptions);
+            yield (0, exec_1.exec)('git', ['commit', '-v', '-m', `"${message}"`], this.execOptions);
             return this;
         });
     }
@@ -89,7 +100,7 @@ class Git {
     tagLatestCommit(tag) {
         return __awaiter(this, void 0, void 0, function* () {
             const { name, message } = tag;
-            yield exec_1.exec('git', ['tag', '-a', name, '-m', (message || name)], this.execOptions);
+            yield (0, exec_1.exec)('git', ['tag', '-a', name, '-m', (message || name)], this.execOptions);
             return this;
         });
     }
@@ -100,7 +111,7 @@ class Git {
      */
     pushBranch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('git', ['push', '-u', '--tags', this.remoteName, branch], this.execOptions);
+            yield (0, exec_1.exec)('git', ['push', '-u', '--tags', this.remoteName, branch], this.execOptions);
             return this;
         });
     }

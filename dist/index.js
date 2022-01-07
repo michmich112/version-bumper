@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -44,24 +44,20 @@ const gh_action_stats_1 = __importDefault(require("gh-action-stats"));
 const options_1 = require("./utils/options");
 const readline = __importStar(require("readline"));
 const gitUtils_1 = require("./utils/gitUtils");
-const Git_1 = __importDefault(require("./lib/Git"));
 const SUCCESS = 0, FAILURE = 1;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        gh_action_stats_1.default();
         if (!core.getInput('github-token')) {
             core.error("Github token required");
             return FAILURE;
         }
         try {
-            let options = yield options_1.getBumperOptions();
-            let state = yield options_1.getBumperState(options);
+            let options = yield (0, options_1.getBumperOptions)();
+            let state = yield (0, options_1.getBumperState)(options);
             if (state.curVersion === state.newVersion) {
                 core.info('No bump rules applicable');
                 return SUCCESS;
             }
-            yield new Git_1.default().checkoutBranch(state.branch);
-            yield bump(state);
             const GIT_OPTIONS = {
                 userName: 'version-bumper',
                 userEmail: 'bumper@boringday.co',
@@ -70,12 +66,17 @@ function main() {
                 token: core.getInput('github-token'),
                 branch: state.branch
             };
-            yield gitUtils_1.commitAndPush(GIT_OPTIONS);
+            const git = yield (0, gitUtils_1.configureGit)(GIT_OPTIONS);
+            yield (yield git.fetchRemoteBranch(state.branch)).checkoutBranch(state.branch);
+            yield bump(state);
+            yield (0, gitUtils_1.commitAndPush)(GIT_OPTIONS);
             return SUCCESS;
         }
         catch (e) {
+            const message = e.message + "/n" + e.stack;
             core.error(e.message);
-            return FAILURE;
+            core.setFailed(`Error: ${e.message}, Validate options file or create an issue if this persists`);
+            throw new Error(message);
         }
     });
 }
@@ -143,9 +144,4 @@ function setNewVersion(file, curVersion, newVersion) {
         });
     });
 }
-main()
-    .then(status => status)
-    .catch(e => {
-    core.error(e);
-    return FAILURE;
-});
+(0, gh_action_stats_1.default)(main);
