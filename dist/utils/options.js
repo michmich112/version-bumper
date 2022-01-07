@@ -256,8 +256,8 @@ exports.normalizeFiles = normalizeFiles;
  *  - workflow_dispatch: any
  */
 function getTrigger() {
-    let { eventName } = github.context;
-    console.info(`Trigger -> ${eventName}`);
+    let { eventName, action } = github.context;
+    console.info(`Trigger -> ${eventName} - ${action}`);
     switch (eventName) {
         case 'push':
             return 'commit';
