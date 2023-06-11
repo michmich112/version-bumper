@@ -142,7 +142,7 @@ export async function getBumperOptions(): Promise<BumperOptionsFile> {
     }
   } else if (!bumperOptions.hasOwnProperty('versionFile')
     || !bumperOptions.versionFile
-    || (bumperOptions.versionFile as string).trim() === "") {
+    || (bumperOptions.versionFile instanceof String && (bumperOptions.versionFile as string).trim() === "")) {
     err("Version file is not defined in option file or workflow input.");
   } else {
     bumperOptions.versionFile = normalizeFiles([bumperOptions.versionFile])[0];
