@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '12'
+          node-version: '16'
       - name: Bump Versions
         uses: michmich112/version-bumper@master
         with:
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '12'
+          node-version: '16'
       - name: Bump Versions
         uses: michmich112/version-bumper@master
         with:

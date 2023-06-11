@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with: 
-          node-version: '12'
+          node-version: '16'
       - name: Bump & Tag
         uses: michmich112/version-bumper@master
         with:
