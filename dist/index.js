@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -105,7 +109,7 @@ function bump(state) {
     });
 }
 function setNewVersion(file, curVersion, newVersion) {
-    var e_1, _a;
+    var _a, e_1, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         const rl = readline.createInterface({ input: fs.createReadStream(file.path), crlfDelay: Infinity });
         const numMatches = 1;
@@ -115,27 +119,34 @@ function setNewVersion(file, curVersion, newVersion) {
         if (!fs.existsSync(file.path))
             throw new Error(`File with path ${file.path} cannot be bumped as it cannot be found.`);
         try {
-            for (var rl_1 = __asyncValues(rl), rl_1_1; rl_1_1 = yield rl_1.next(), !rl_1_1.done;) {
-                let ln = rl_1_1.value;
-                if (ln.indexOf(curVersion) !== -1
-                    && matches < numMatches && !file.line) {
-                    matches += 1;
-                    ln = ln.replace(curVersion, newVersion);
+            for (var _d = true, rl_1 = __asyncValues(rl), rl_1_1; rl_1_1 = yield rl_1.next(), _a = rl_1_1.done, !_a;) {
+                _c = rl_1_1.value;
+                _d = false;
+                try {
+                    let ln = _c;
+                    if (ln.indexOf(curVersion) !== -1
+                        && matches < numMatches && !file.line) {
+                        matches += 1;
+                        ln = ln.replace(curVersion, newVersion);
+                    }
+                    else if (file.line && counter === file.line) {
+                        if (ln.indexOf(curVersion) === -1)
+                            throw new Error(`Current Version not found on line ${file.line} in file with path ${file.path}.`);
+                        matches += 1;
+                        ln = ln.replace(curVersion, newVersion);
+                    }
+                    update += ln + '\n';
+                    counter++; // increment line counter
                 }
-                else if (file.line && counter === file.line) {
-                    if (ln.indexOf(curVersion) === -1)
-                        throw new Error(`Current Version not found on line ${file.line} in file with path ${file.path}.`);
-                    matches += 1;
-                    ln = ln.replace(curVersion, newVersion);
+                finally {
+                    _d = true;
                 }
-                update += ln + '\n';
-                counter++; // increment line counter
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (rl_1_1 && !rl_1_1.done && (_a = rl_1.return)) yield _a.call(rl_1);
+                if (!_d && !_a && (_b = rl_1.return)) yield _b.call(rl_1);
             }
             finally { if (e_1) throw e_1.error; }
         }

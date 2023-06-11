@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -118,7 +122,7 @@ function escapeRegExp(string) {
  * @param options
  */
 function getCurVersion(options) {
-    var e_1, _a;
+    var _a, e_1, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         let { path, line } = options.versionFile;
         const schemeRegExp = getSchemeRegex(options);
@@ -131,42 +135,49 @@ function getCurVersion(options) {
         const rl = readline.createInterface({ input: fs.createReadStream(path), crlfDelay: Infinity });
         let counter = 1, initialMatch;
         try {
-            for (var rl_1 = __asyncValues(rl), rl_1_1; rl_1_1 = yield rl_1.next(), !rl_1_1.done;) {
-                const ln = rl_1_1.value;
-                const match = ln.match(regExp);
-                if (!initialMatch && match !== null)
-                    initialMatch = match[0]; // set the initial match
-                if (!line && initialMatch) { // return straight away if line is not specified
-                    console.log(`Match found line ${counter} -> ${initialMatch}`);
-                    return initialMatch;
-                }
-                // if the user has specified a line number we go all the way to it
-                if (line && counter === line) {
-                    if (match !== null) {
-                        console.log(`Found scheme match line ${counter} -> ${match[0]}`);
-                        return match[0];
+            for (var _d = true, rl_1 = __asyncValues(rl), rl_1_1; rl_1_1 = yield rl_1.next(), _a = rl_1_1.done, !_a;) {
+                _c = rl_1_1.value;
+                _d = false;
+                try {
+                    const ln = _c;
+                    const match = ln.match(regExp);
+                    if (!initialMatch && match !== null)
+                        initialMatch = match[0]; // set the initial match
+                    if (!line && initialMatch) { // return straight away if line is not specified
+                        console.log(`Match found line ${counter} -> ${initialMatch}`);
+                        return initialMatch;
                     }
-                    else {
-                        console.log(`No match found for specified scheme on specified line ${line}.`);
-                        if (initialMatch) {
-                            console.log(`Using previous found match: ${initialMatch}`);
-                            return initialMatch;
+                    // if the user has specified a line number we go all the way to it
+                    if (line && counter === line) {
+                        if (match !== null) {
+                            console.log(`Found scheme match line ${counter} -> ${match[0]}`);
+                            return match[0];
                         }
-                        else
-                            console.log(`No match found previously. Continuing file search.`);
+                        else {
+                            console.log(`No match found for specified scheme on specified line ${line}.`);
+                            if (initialMatch) {
+                                console.log(`Using previous found match: ${initialMatch}`);
+                                return initialMatch;
+                            }
+                            else
+                                console.log(`No match found previously. Continuing file search.`);
+                        }
                     }
+                    else if (line && counter > line && initialMatch) {
+                        console.log(`Match found line ${counter} -> ${initialMatch}`);
+                        return initialMatch;
+                    }
+                    counter++; // increment line counter
                 }
-                else if (line && counter > line && initialMatch) {
-                    console.log(`Match found line ${counter} -> ${initialMatch}`);
-                    return initialMatch;
+                finally {
+                    _d = true;
                 }
-                counter++; // increment line counter
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (rl_1_1 && !rl_1_1.done && (_a = rl_1.return)) yield _a.call(rl_1);
+                if (!_d && !_a && (_b = rl_1.return)) yield _b.call(rl_1);
             }
             finally { if (e_1) throw e_1.error; }
         }
