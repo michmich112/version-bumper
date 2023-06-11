@@ -90,9 +90,6 @@ function getBranchFromTrigger(trigger) {
             branch = ((_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.substring('refs/heads/'.length)) || '';
             break;
     }
-    core.info(`process.env.GITHUB_BASE_REF ${process.env.GITHUB_BASE_REF}`);
-    core.info(`process.env.GITHUB_HEAD_REF: ${process.env.GITHUB_HEAD_REF}`);
-    core.info(`process.env.GITHUB_REF: ${process.env.GITHUB_REF}`);
     core.info(`Current Branch identified: ${branch}`);
     return branch;
 }
@@ -116,6 +113,7 @@ function getDestBranchFromTrigger(trigger) {
             branch = ((_a = process.env.GITHUB_REF) === null || _a === void 0 ? void 0 : _a.substring('refs/heads/'.length)) || '';
             break;
     }
+    core.info(`Current Dest Branch identified: ${branch}`);
     return branch;
 }
 exports.getDestBranchFromTrigger = getDestBranchFromTrigger;
@@ -179,7 +177,7 @@ function getBumperOptions() {
         }
         else if (!bumperOptions.hasOwnProperty('versionFile')
             || !bumperOptions.versionFile
-            || bumperOptions.versionFile.trim() === "") {
+            || (bumperOptions.versionFile instanceof String && bumperOptions.versionFile.trim() === "")) {
             err("Version file is not defined in option file or workflow input.");
         }
         else {
