@@ -28,7 +28,21 @@ jobs:
           scheme: org_semantic
           version-file: ./package.json
           files: "[]"
-          rules: '[{"trigger": "commit", "bump": "build", "branch": "master", "tag": true},{"trigger": "manual", "bump": "minor", "reset": "build", "branch": "master", "tag": true} ]'
+          rules: >
+            [
+              {
+                "trigger": "commit",
+                "bump": "build",
+                "branch": "master",
+                "tag": true
+              },{
+                "trigger": "manual",
+                "bump": "minor",
+                "reset": "build",
+                "branch": "master",
+                "tag": true
+              } 
+            ]
           github-token: ${{ secrets.GITHUB_TOKEN }}
           
 
