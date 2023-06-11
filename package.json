@@ -1,6 +1,6 @@
 {
   "name": "version-bumper",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "GitHub action to automatically bump versions in any project and define your versioning schemes and  rules to control your versioning pipeline.",
   "main": "src/lib/index.js",
   "scripts": {
